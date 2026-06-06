@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "loungeChat": {
+      ".read": "auth != null",
+      "$messageId": {
+        ".write": "auth != null"
+      }
+    },
+    "games": {
+      ".read": "auth != null",
+      "$roomCode": {
+        ".write": "auth != null"
+      }
+    }
+  }
+}

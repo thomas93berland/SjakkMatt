@@ -387,6 +387,13 @@
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    import {
+      getDatabase,
+      ref,
+      set,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
       authDomain: "berlands-sjakk.firebaseapp.com",
@@ -399,6 +406,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getDatabase(app);
 
     const msg = document.getElementById("msg");
     const loginBtn = document.getElementById("loginBtn");
@@ -444,7 +452,23 @@
 
       try {
         msg.textContent = "Oppretter bruker...";
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await set(ref(db, "users/" + user.uid), {
+          uid: user.uid,
+          name: email.split("@")[0],
+          email: email,
+          elo: 800,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          bio: "",
+          favoriteOpening: "",
+          createdAt: serverTimestamp(),
+          lastSeen: serverTimestamp()
+        });
+
         msg.textContent = "✅ Bruker opprettet! Sender deg videre...";
         setTimeout(goHome, 700);
       } catch (error) {

@@ -285,6 +285,130 @@
       filter: brightness(1.06);
     }
 
+
+
+    .profile-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .community-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .chat-card,
+    .online-card {
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
+      border: 1px solid rgba(255, 216, 165, 0.13);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
+      padding: 22px;
+    }
+
+    .chat-card h2,
+    .online-card h2 {
+      margin: 0 0 8px;
+      color: #fff0d9;
+      font-size: 22px;
+    }
+
+    .chat-card p,
+    .online-card p {
+      margin: 0 0 14px;
+      color: #d9c0a3;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .chat-window {
+      height: 260px;
+      overflow-y: auto;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255, 214, 160, 0.10);
+      margin-bottom: 12px;
+    }
+
+    .chat-message {
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: rgba(255, 247, 236, 0.07);
+      border: 1px solid rgba(255, 217, 165, 0.08);
+      margin-bottom: 9px;
+    }
+
+    .chat-message strong {
+      display: block;
+      color: #ffd59d;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .chat-message span {
+      color: #f7efe4;
+      line-height: 1.45;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .chat-form input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      background: rgba(255, 247, 236, 0.08);
+      color: #fff4e6;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .chat-form input::placeholder {
+      color: #c7ad8e;
+    }
+
+    .chat-form input:focus {
+      border-color: rgba(255, 194, 107, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
+    }
+
+    .chat-form button {
+      white-space: nowrap;
+    }
+
+    .online-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .online-player {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 15px;
+      background: rgba(255, 247, 236, 0.07);
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      color: #f7efe4;
+    }
+
+    .online-player span {
+      color: #c7ad8e;
+      font-size: 13px;
+    }
+
     #statusMsg {
       margin-top: 16px;
       color: #ffd59d;
@@ -298,8 +422,9 @@
         grid-template-columns: 1fr;
       }
 
-      .menu {
-        grid-template-columns: repeat(2, 1fr);
+      .menu,
+      .community-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -389,6 +514,10 @@
             <strong id="draws">0</strong>
           </div>
         </div>
+
+        <div class="profile-actions">
+          <button type="button" class="secondary-btn" id="openProfileBtn">👤 Åpne min profil</button>
+        </div>
       </div>
     </section>
 
@@ -420,6 +549,33 @@
       </div>
     </section>
 
+    <section class="community-grid">
+      <div class="chat-card">
+        <h2>💬 Chatrom</h2>
+        <p>Snakk med andre registrerte spillere i Chess Loungen.</p>
+
+        <div class="chat-window" id="chatWindow">
+          <div class="chat-message">
+            <strong>Chess Loungen</strong>
+            <span>Laster chat...</span>
+          </div>
+        </div>
+
+        <form class="chat-form" id="chatForm">
+          <input id="chatInput" maxlength="220" placeholder="Skriv en melding..." autocomplete="off" />
+          <button type="submit" class="main-btn">Send</button>
+        </form>
+      </div>
+
+      <div class="online-card">
+        <h2>♟ Spillere</h2>
+        <p>Her ser du registrerte spillere som har profil i databasen.</p>
+        <div class="online-list" id="playersList">
+          <div class="online-player"><strong>Laster spillere...</strong><span></span></div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script type="module">
@@ -431,6 +587,19 @@
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref,
+      get,
+      set,
+      update,
+      push,
+      onValue,
+      query,
+      limitToLast,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
@@ -444,19 +613,152 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getDatabase(app);
 
     const username = document.getElementById("username");
     const emailText = document.getElementById("emailText");
     const logoutBtn = document.getElementById("logoutBtn");
     const statusMsg = document.getElementById("statusMsg");
+    const openProfileBtn = document.getElementById("openProfileBtn");
+    const chatWindow = document.getElementById("chatWindow");
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const playersList = document.getElementById("playersList");
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        username.textContent = user.displayName || "Sjakkspiller";
-        emailText.textContent = user.email || "Innlogget";
-      } else {
-        window.location.href = "./index.html";
+    let currentUser = null;
+
+    async function ensureUserProfile(user) {
+      const userRef = ref(db, "users/" + user.uid);
+      const snap = await get(userRef);
+
+      if (!snap.exists()) {
+        await set(userRef, {
+          uid: user.uid,
+          name: user.displayName || (user.email ? user.email.split("@")[0] : "Sjakkspiller"),
+          email: user.email || "",
+          elo: 800,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          bio: "",
+          favoriteOpening: "",
+          createdAt: serverTimestamp(),
+          lastSeen: serverTimestamp()
+        });
+        return;
       }
+
+      await update(userRef, {
+        email: user.email || "",
+        lastSeen: serverTimestamp()
+      });
+    }
+
+    function listenToMyProfile(user) {
+      onValue(ref(db, "users/" + user.uid), (snap) => {
+        const profile = snap.val() || {};
+        username.textContent = profile.name || user.displayName || "Sjakkspiller";
+        emailText.textContent = user.email || "Innlogget";
+        document.getElementById("elo").textContent = profile.elo ?? 800;
+        document.getElementById("wins").textContent = profile.wins ?? 0;
+        document.getElementById("losses").textContent = profile.losses ?? 0;
+        document.getElementById("draws").textContent = profile.draws ?? 0;
+      }, (error) => {
+        statusMsg.textContent = "Firebase-reglene stopper profilen: " + error.code;
+      });
+    }
+
+    function listenToChat() {
+      const chatQuery = query(ref(db, "loungeChat"), limitToLast(40));
+
+      onValue(chatQuery, (snap) => {
+        chatWindow.innerHTML = "";
+
+        if (!snap.exists()) {
+          const empty = document.createElement("div");
+          empty.className = "chat-message";
+          empty.innerHTML = "<strong>Chess Loungen</strong><span>Ingen meldinger enda. Start praten 🔥</span>";
+          chatWindow.appendChild(empty);
+          return;
+        }
+
+        snap.forEach((child) => {
+          const msg = child.val();
+          const item = document.createElement("div");
+          const name = document.createElement("strong");
+          const text = document.createElement("span");
+
+          item.className = "chat-message";
+          name.textContent = msg.name || "Sjakkspiller";
+          text.textContent = msg.text || "";
+
+          item.appendChild(name);
+          item.appendChild(text);
+          chatWindow.appendChild(item);
+        });
+
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }, (error) => {
+        chatWindow.innerHTML = "";
+        const message = document.createElement("div");
+        message.className = "chat-message";
+        message.innerHTML = "<strong>Chat virker ikke enda</strong><span>Firebase-reglene stopper chatten: " + error.code + "</span>";
+        chatWindow.appendChild(message);
+      });
+    }
+
+    function listenToPlayers() {
+      onValue(ref(db, "users"), (snap) => {
+        playersList.innerHTML = "";
+
+        if (!snap.exists()) {
+          playersList.innerHTML = "<div class='online-player'><strong>Ingen profiler enda</strong><span></span></div>";
+          return;
+        }
+
+        const players = [];
+        snap.forEach((child) => {
+          players.push(child.val());
+        });
+
+        players
+          .sort((a, b) => (b.elo || 800) - (a.elo || 800))
+          .slice(0, 8)
+          .forEach((player) => {
+            const row = document.createElement("div");
+            const name = document.createElement("strong");
+            const elo = document.createElement("span");
+
+            row.className = "online-player";
+            name.textContent = player.name || "Sjakkspiller";
+            elo.textContent = `Elo ${player.elo ?? 800}`;
+
+            row.appendChild(name);
+            row.appendChild(elo);
+            playersList.appendChild(row);
+          });
+      }, (error) => {
+        playersList.innerHTML = `<div class='online-player'><strong>Firebase-feil</strong><span>${error.code}</span></div>`;
+      });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "./index.html";
+        return;
+      }
+
+      currentUser = user;
+
+      try {
+        await ensureUserProfile(user);
+      } catch (error) {
+        statusMsg.textContent = "Firebase-reglene stopper brukerprofilen: " + error.code;
+      }
+
+      listenToMyProfile(user);
+      listenToChat();
+      listenToPlayers();
     });
 
     logoutBtn.addEventListener("click", async () => {
@@ -484,7 +786,11 @@
     });
 
     document.getElementById("profileCard").addEventListener("click", () => {
-      comingSoon("Profilside");
+      window.location.href = "./profile.html";
+    });
+
+    openProfileBtn.addEventListener("click", () => {
+      window.location.href = "./profile.html";
     });
 
     document.getElementById("leaderboardCard").addEventListener("click", () => {
@@ -493,6 +799,29 @@
 
     document.getElementById("trainingCard").addEventListener("click", () => {
       comingSoon("Sjakktrening");
+    });
+
+    chatForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!currentUser) return;
+
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      chatInput.value = "";
+
+      try {
+        await push(ref(db, "loungeChat"), {
+          uid: currentUser.uid,
+          name: username.textContent || "Sjakkspiller",
+          text: text.slice(0, 220),
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        chatInput.value = text;
+        statusMsg.textContent = "Kunne ikke sende chatmelding: " + error.code;
+      }
     });
 
     document.querySelectorAll(".menu-card").forEach((card) => {

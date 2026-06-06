@@ -317,31 +317,39 @@
       currentUser = user;
 
       const userRef = ref(db, "users/" + user.uid);
-      const snap = await get(userRef);
 
-      if (!snap.exists()) {
-        await set(userRef, {
-          uid: user.uid,
-          email: user.email || "",
-          name: user.displayName || (user.email ? user.email.split("@")[0] : "Sjakkspiller"),
-          elo: 800,
-          wins: 0,
-          losses: 0,
-          draws: 0,
-          bio: "",
-          favoriteOpening: "",
-          createdAt: serverTimestamp(),
-          lastSeen: serverTimestamp()
-        });
-      } else {
-        await update(userRef, {
-          email: user.email || "",
-          lastSeen: serverTimestamp()
-        });
+      try {
+        const snap = await get(userRef);
+
+        if (!snap.exists()) {
+          await set(userRef, {
+            uid: user.uid,
+            email: user.email || "",
+            name: user.displayName || (user.email ? user.email.split("@")[0] : "Sjakkspiller"),
+            elo: 800,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            bio: "",
+            favoriteOpening: "",
+            createdAt: serverTimestamp(),
+            lastSeen: serverTimestamp()
+          });
+        } else {
+          await update(userRef, {
+            email: user.email || "",
+            lastSeen: serverTimestamp()
+          });
+        }
+      } catch (error) {
+        setStatus("❌ Firebase-reglene stopper profilen: " + error.code);
+        fillProfile(user, {});
       }
 
       onValue(userRef, (snap) => {
         fillProfile(user, snap.val() || {});
+      }, (error) => {
+        setStatus("❌ Kan ikke lese profil: " + error.code);
       });
     });
 
@@ -366,7 +374,7 @@
 
         setStatus("✅ Profilen er lagret.");
       } catch (error) {
-        setStatus("❌ Kunne ikke lagre profilen akkurat nå.");
+        setStatus("❌ Kunne ikke lagre profilen: " + error.code);
       }
     });
 
