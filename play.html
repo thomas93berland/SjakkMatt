@@ -16,8 +16,7 @@
       min-height: 100vh;
       font-family: Arial, sans-serif;
       color: #f7efe4;
-      padding: 16px;
-
+      padding: 14px;
       background:
         linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.9)),
         repeating-linear-gradient(
@@ -61,6 +60,10 @@
     .top-buttons {
       display: flex;
       gap: 10px;
+    }
+
+    button {
+      font-family: inherit;
     }
 
     .small-btn {
@@ -131,7 +134,7 @@
     }
 
     #board {
-      width: min(88vw, 620px);
+      width: min(92vw, 620px);
       aspect-ratio: 1 / 1;
       display: grid;
       grid-template-columns: repeat(8, 1fr);
@@ -141,6 +144,7 @@
       border: 6px solid rgba(38, 23, 13, 0.95);
       box-shadow: 0 18px 35px rgba(0,0,0,0.35);
       background: #2a180e;
+      touch-action: manipulation;
     }
 
     .square {
@@ -148,28 +152,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(28px, 7vw, 58px);
+      font-size: clamp(30px, 8vw, 58px);
       cursor: pointer;
       user-select: none;
+      min-width: 0;
+      min-height: 0;
     }
 
     .light {
       background: #d6b27d;
-      color: #fff;
     }
 
     .dark {
       background: #815530;
-      color: #fff;
-    }
-
-    .square:hover {
-      filter: brightness(1.08);
     }
 
     .selected {
-      outline: 4px solid #ffd36f;
+      outline: 4px solid #ffe27a;
       outline-offset: -4px;
+      box-shadow: inset 0 0 20px rgba(255, 236, 120, 0.45);
     }
 
     .legal::after {
@@ -177,7 +178,7 @@
       width: 28%;
       height: 28%;
       border-radius: 999px;
-      background: rgba(30, 20, 10, 0.34);
+      background: rgba(30, 20, 10, 0.38);
       position: absolute;
     }
 
@@ -186,7 +187,7 @@
       width: 78%;
       height: 78%;
       border-radius: 999px;
-      border: 4px solid rgba(60, 25, 12, 0.36);
+      border: 4px solid rgba(60, 25, 12, 0.42);
       position: absolute;
     }
 
@@ -197,6 +198,12 @@
       font-size: 10px;
       color: rgba(35, 20, 10, 0.55);
       font-weight: bold;
+      pointer-events: none;
+    }
+
+    .piece {
+      position: relative;
+      z-index: 2;
       pointer-events: none;
     }
 
@@ -258,11 +265,6 @@
     input::placeholder {
       color: #c7ad8e;
       text-transform: none;
-    }
-
-    input:focus {
-      border-color: rgba(255, 194, 107, 0.55);
-      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
     }
 
     .main-btn {
@@ -401,7 +403,7 @@
       <aside class="side-card">
         <h2>Online kamp</h2>
         <p>
-          Lag et rom og del koden med en registrert bruker.
+          Lag et rom og del romkoden med en venn.
           Når vennen din skriver inn koden, blir de svart.
         </p>
 
@@ -417,7 +419,7 @@
           <div class="room-code" id="roomCode">------</div>
         </div>
 
-        <div id="status">Logg inn og lag eller bli med i et rom.</div>
+        <div id="status">Laster sjakk...</div>
 
         <div class="moves" id="moves">
           <strong>Trekk:</strong><br>
@@ -502,6 +504,10 @@
       bk: "♚"
     };
 
+    function showStatus(text) {
+      statusEl.textContent = text;
+    }
+
     function getPlayerName() {
       if (!user) return "Ukjent spiller";
       return user.displayName || user.email || "Sjakkspiller";
@@ -518,23 +524,29 @@
       return code;
     }
 
-    function showStatus(text) {
-      statusEl.textContent = text;
-    }
-
     function getChess() {
       if (!window.Chess) {
-        showStatus("Kunne ikke laste chess.js. Sjekk internett/CDN.");
+        showStatus("Chess.js lastet ikke. Sjekk internett eller prøv igjen.");
         return null;
       }
 
       const chess = new window.Chess();
 
       if (activeGameData && activeGameData.fen) {
-        chess.load(activeGameData.fen);
+        const loaded = chess.load(activeGameData.fen);
+
+        if (!loaded) {
+          showStatus("Ugyldig sjakkstilling. Lag et nytt rom.");
+        }
       }
 
       return chess;
+    }
+
+    function currentBoardColor(squareName) {
+      const file = squareName.charCodeAt(0) - 97;
+      const rank = Number(squareName[1]);
+      return (file + rank) % 2 === 0 ? "dark" : "light";
     }
 
     function renderBoard() {
@@ -558,16 +570,14 @@
           const piece = chess.get(squareName);
 
           const square = document.createElement("div");
-          square.classList.add("square");
-
-          const isLight = (r + f) % 2 === 0;
-          square.classList.add(isLight ? "light" : "dark");
+          square.className = "square " + currentBoardColor(squareName);
 
           if (selectedSquare === squareName) {
             square.classList.add("selected");
           }
 
           const legalMove = legalTargets.find(move => move.to === squareName);
+
           if (legalMove) {
             if (piece) {
               square.classList.add("capture");
@@ -577,11 +587,14 @@
           }
 
           if (piece) {
-            square.textContent = pieceMap[piece.color + piece.type];
+            const pieceSpan = document.createElement("span");
+            pieceSpan.className = "piece";
+            pieceSpan.textContent = pieceMap[piece.color + piece.type];
+            square.appendChild(pieceSpan);
           }
 
           const coord = document.createElement("span");
-          coord.classList.add("coord");
+          coord.className = "coord";
           coord.textContent = squareName.toUpperCase();
           square.appendChild(coord);
 
@@ -609,7 +622,7 @@
       if (!chess) return;
 
       if (activeGameData.status === "waiting") {
-        showStatus("Venter på at en venn blir med. Del romkoden.");
+        showStatus("Rommet er klart. Del romkoden med vennen din.");
       } else if (activeGameData.status === "finished") {
         showStatus(activeGameData.result || "Partiet er ferdig.");
       } else {
@@ -632,8 +645,7 @@
 
     function isMyTurn(chess) {
       if (!playerColor) return false;
-
-      if (activeGameData.status !== "playing") return false;
+      if (!activeGameData || activeGameData.status !== "playing") return false;
 
       if (playerColor === "white" && chess.turn() === "w") return true;
       if (playerColor === "black" && chess.turn() === "b") return true;
@@ -731,14 +743,18 @@
       const oldMoves = activeGameData.moves || [];
       const newMoves = [...oldMoves, move.san];
 
-      await update(ref(db, "games/" + activeRoom), {
-        fen: chess.fen(),
-        turn: chess.turn(),
-        status: status,
-        result: result,
-        moves: newMoves,
-        lastMoveAt: serverTimestamp()
-      });
+      try {
+        await update(ref(db, "games/" + activeRoom), {
+          fen: chess.fen(),
+          turn: chess.turn(),
+          status: status,
+          result: result,
+          moves: newMoves,
+          lastMoveAt: serverTimestamp()
+        });
+      } catch (error) {
+        showStatus("Kunne ikke lagre trekket. Sjekk Firebase Rules.");
+      }
     }
 
     async function makeUniqueRoomCode() {
@@ -755,10 +771,13 @@
     }
 
     async function createRoom() {
-      if (!user) return;
+      if (!user) {
+        showStatus("Du må være innlogget først.");
+        return;
+      }
 
       if (!window.Chess) {
-        showStatus("Kunne ikke laste chess.js. Sjekk internett/CDN.");
+        showStatus("Chess.js lastet ikke. Prøv å oppdatere siden.");
         return;
       }
 
@@ -781,12 +800,15 @@
 
         enterRoom(code);
       } catch (error) {
-        showStatus(error.message || "Kunne ikke lage rom akkurat nå.");
+        showStatus("Kunne ikke lage rom. Sjekk Firebase Database Rules.");
       }
     }
 
     async function joinRoom() {
-      if (!user) return;
+      if (!user) {
+        showStatus("Du må være innlogget først.");
+        return;
+      }
 
       const code = joinCodeInput.value.trim().toUpperCase();
 
@@ -795,33 +817,37 @@
         return;
       }
 
-      const roomRef = ref(db, "games/" + code);
-      const snap = await get(roomRef);
+      try {
+        const roomRef = ref(db, "games/" + code);
+        const snap = await get(roomRef);
 
-      if (!snap.exists()) {
-        showStatus("Fant ikke rommet. Sjekk romkoden.");
-        return;
-      }
+        if (!snap.exists()) {
+          showStatus("Fant ikke rommet. Sjekk romkoden.");
+          return;
+        }
 
-      const game = snap.val();
+        const game = snap.val();
 
-      if (game.whiteUid === user.uid || game.blackUid === user.uid) {
+        if (game.whiteUid === user.uid || game.blackUid === user.uid) {
+          enterRoom(code);
+          return;
+        }
+
+        if (game.blackUid) {
+          showStatus("Rommet er allerede fullt.");
+          return;
+        }
+
+        await update(roomRef, {
+          blackUid: user.uid,
+          blackName: getPlayerName(),
+          status: "playing"
+        });
+
         enterRoom(code);
-        return;
+      } catch (error) {
+        showStatus("Kunne ikke bli med. Sjekk Firebase Database Rules.");
       }
-
-      if (game.blackUid) {
-        showStatus("Rommet er allerede fullt.");
-        return;
-      }
-
-      await update(roomRef, {
-        blackUid: user.uid,
-        blackName: getPlayerName(),
-        status: "playing"
-      });
-
-      enterRoom(code);
     }
 
     function enterRoom(code) {
@@ -831,6 +857,9 @@
 
       activeRoom = code;
       activeRoomRef = ref(db, "games/" + code);
+
+      selectedSquare = null;
+      legalTargets = [];
 
       onValue(activeRoomRef, (snap) => {
         if (!snap.exists()) {
@@ -864,13 +893,8 @@
       renderBoard();
     });
 
-    createRoomBtn.addEventListener("click", () => {
-      createRoom();
-    });
-
-    joinRoomBtn.addEventListener("click", () => {
-      joinRoom();
-    });
+    createRoomBtn.addEventListener("click", createRoom);
+    joinRoomBtn.addEventListener("click", joinRoom);
 
     joinCodeInput.addEventListener("input", () => {
       joinCodeInput.value = joinCodeInput.value
