@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Berlands Sjakk</title>
+  <title>Chess Loungen</title>
 
   <style>
     * {
@@ -309,11 +309,11 @@
   <div class="page">
     <div class="left">
       <div class="brand">
-        <div class="small-label">♟ Velkommen til Berlands Sjakk</div>
+        <div class="small-label">♟ Velkommen til Chess Loungen</div>
         <h1>En lun plass for sjakk, strategi og vennskap</h1>
         <p>
           Spill online mot vennene dine i en rolig og koselig sjakkverden med
-          varm treverk-stemning, konkurranse og Elo-rating.
+          varm treverkstemning, konkurranse og Elo-rating.
         </p>
       </div>
 
@@ -354,17 +354,17 @@
 
         <div class="input-wrap">
           <label for="email">E-post</label>
-          <input id="email" type="email" placeholder="f.eks. test@test.no" />
+          <input id="email" type="email" placeholder="f.eks. test@test.no" autocomplete="email" />
         </div>
 
         <div class="input-wrap">
           <label for="password">Passord</label>
-          <input id="password" type="password" placeholder="Minst 6 tegn" />
+          <input id="password" type="password" placeholder="Minst 6 tegn" autocomplete="current-password" />
         </div>
 
         <div class="buttons">
-          <button id="loginBtn">Logg inn</button>
-          <button id="registerBtn">Registrer bruker</button>
+          <button type="button" id="loginBtn">Logg inn</button>
+          <button type="button" id="registerBtn">Registrer bruker</button>
         </div>
 
         <div id="msg"></div>
@@ -404,53 +404,79 @@
     const loginBtn = document.getElementById("loginBtn");
     const registerBtn = document.getElementById("registerBtn");
 
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    function getFriendlyError(error) {
+      const messages = {
+        "auth/invalid-email": "Ugyldig e-postadresse.",
+        "auth/missing-password": "Skriv inn passord.",
+        "auth/weak-password": "Passordet må ha minst 6 tegn.",
+        "auth/email-already-in-use": "Denne e-posten er allerede registrert.",
+        "auth/user-not-found": "Fant ingen bruker med denne e-posten.",
+        "auth/wrong-password": "Feil passord.",
+        "auth/invalid-credential": "Feil e-post eller passord."
+      };
+
+      return messages[error.code] || error.code || "Noe gikk galt.";
+    }
+
+
     function goHome() {
       window.location.href = "./home.html";
     }
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        msg.innerHTML = "✅ Du er allerede innlogget. Sender deg videre...";
+        msg.textContent = "✅ Du er allerede innlogget. Sender deg videre...";
         setTimeout(goHome, 500);
       }
     });
 
     registerBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
 
       if (email === "" || password === "") {
-        msg.innerHTML = "❌ Skriv inn e-post og passord.";
+        msg.textContent = "❌ Skriv inn e-post og passord.";
         return;
       }
 
       try {
-        msg.innerHTML = "Oppretter bruker...";
+        msg.textContent = "Oppretter bruker...";
         await createUserWithEmailAndPassword(auth, email, password);
-        msg.innerHTML = "✅ Bruker opprettet! Sender deg videre...";
+        msg.textContent = "✅ Bruker opprettet! Sender deg videre...";
         setTimeout(goHome, 700);
       } catch (error) {
-        msg.innerHTML = "❌ " + error.code;
+        msg.textContent = "❌ " + getFriendlyError(error);
       }
     });
 
     loginBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
 
       if (email === "" || password === "") {
-        msg.innerHTML = "❌ Skriv inn e-post og passord.";
+        msg.textContent = "❌ Skriv inn e-post og passord.";
         return;
       }
 
       try {
-        msg.innerHTML = "Logger inn...";
+        msg.textContent = "Logger inn...";
         await signInWithEmailAndPassword(auth, email, password);
-        msg.innerHTML = "✅ Innlogging vellykket! Sender deg videre...";
+        msg.textContent = "✅ Innlogging vellykket! Sender deg videre...";
         setTimeout(goHome, 700);
       } catch (error) {
-        msg.innerHTML = "❌ " + error.code;
+        msg.textContent = "❌ " + getFriendlyError(error);
       }
+    });
+
+    [emailInput, passwordInput].forEach((input) => {
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          loginBtn.click();
+        }
+      });
     });
   </script>
 

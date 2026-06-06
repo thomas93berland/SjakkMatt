@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>The Chess Lodge | Hjem</title>
+  <title>Chess Loungen | Hjem</title>
 
   <style>
     * {
@@ -335,8 +335,8 @@
   <div class="app">
 
     <header>
-      <div class="logo">♟ <span>Berlands</span> Sjakk</div>
-      <button class="logout" id="logoutBtn">Logg ut</button>
+      <div class="logo">♟ <span>Chess</span> Loungen</div>
+      <button type="button" class="logout" id="logoutBtn">Logg ut</button>
     </header>
 
     <section class="hero">
@@ -350,11 +350,11 @@
           </p>
 
           <div class="quick-actions">
-            <button class="main-btn" id="playBtn" onclick="window.location.href='./play.html'">
+            <button type="button" class="main-btn" id="playBtn">
               🎮 Spill mot venn
             </button>
 
-            <button class="secondary-btn" id="leaderboardBtn">🏆 Se rangliste</button>
+            <button type="button" class="secondary-btn" id="leaderboardBtn">🏆 Se rangliste</button>
           </div>
 
           <div id="statusMsg"></div>
@@ -395,25 +395,25 @@
     <h2 class="section-title">Velg hva du vil gjøre</h2>
 
     <section class="menu">
-      <div class="menu-card" id="friendGameCard" onclick="window.location.href='./play.html'">
+      <div class="menu-card" id="friendGameCard" role="button" tabindex="0">
         <div class="menu-icon">🎮</div>
         <h3>Spill mot venn</h3>
         <p>Lag et rom og del romkode med en venn.</p>
       </div>
 
-      <div class="menu-card" id="profileCard">
+      <div class="menu-card" id="profileCard" role="button" tabindex="0">
         <div class="menu-icon">👤</div>
         <h3>Profil</h3>
         <p>Se rating, seire, tap, remis og kamp-historikk.</p>
       </div>
 
-      <div class="menu-card" id="leaderboardCard">
+      <div class="menu-card" id="leaderboardCard" role="button" tabindex="0">
         <div class="menu-icon">🏆</div>
         <h3>Rangliste</h3>
-        <p>Se hvem som har høyest Elo i Berlands Sjakk.</p>
+        <p>Se hvem som har høyest Elo i Chess Loungen.</p>
       </div>
 
-      <div class="menu-card" id="trainingCard">
+      <div class="menu-card" id="trainingCard" role="button" tabindex="0">
         <div class="menu-icon">♜</div>
         <h3>Trening</h3>
         <p>Øv på taktikker, åpninger og sjakk matt-mønstre.</p>
@@ -493,6 +493,15 @@
 
     document.getElementById("trainingCard").addEventListener("click", () => {
       comingSoon("Sjakktrening");
+    });
+
+    document.querySelectorAll(".menu-card").forEach((card) => {
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          card.click();
+        }
+      });
     });
   </script>
 

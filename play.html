@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Berlands Sjakk | Spill</title>
+  <title>Chess Loungen | Spill</title>
 
   <style>
     * {
@@ -368,11 +368,11 @@
   <div class="app">
 
     <header>
-      <div class="logo">♟ <span>Berlands</span> Sjakk</div>
+      <div class="logo">♟ <span>Chess</span> Loungen</div>
 
       <div class="top-buttons">
-        <button class="small-btn" id="homeBtn">Hjem</button>
-        <button class="small-btn" id="logoutBtn">Logg ut</button>
+        <button type="button" class="small-btn" id="homeBtn">Hjem</button>
+        <button type="button" class="small-btn" id="logoutBtn">Logg ut</button>
       </div>
     </header>
 
@@ -405,12 +405,12 @@
           Når vennen din skriver inn koden, blir de svart.
         </p>
 
-        <button class="main-btn" id="createRoomBtn">Lag nytt rom</button>
+        <button type="button" class="main-btn" id="createRoomBtn">Lag nytt rom</button>
 
         <label for="joinCode">Bli med i rom</label>
-        <input id="joinCode" placeholder="Skriv romkode" maxlength="6" />
+        <input id="joinCode" placeholder="Skriv romkode" maxlength="5" autocomplete="off" />
 
-        <button class="secondary-btn" id="joinRoomBtn">Bli med</button>
+        <button type="button" class="secondary-btn" id="joinRoomBtn">Bli med</button>
 
         <div class="room-box">
           <div>Romkode:</div>
@@ -615,7 +615,8 @@
       } else {
         const turnText = chess.turn() === "w" ? "Hvit sin tur" : "Svart sin tur";
         const yourColorText = playerColor ? `Du spiller ${playerColor === "white" ? "hvit" : "svart"}.` : "Du ser på.";
-        showStatus(`${turnText}. ${yourColorText}`);
+        const checkText = activeGameData.result === "Sjakk!" ? "Sjakk! " : "";
+        showStatus(`${checkText}${turnText}. ${yourColorText}`);
       }
 
       if (activeGameData.moves && Array.isArray(activeGameData.moves)) {
@@ -740,26 +741,48 @@
       });
     }
 
+    async function makeUniqueRoomCode() {
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const code = makeRoomCode();
+        const snap = await get(ref(db, "games/" + code));
+
+        if (!snap.exists()) {
+          return code;
+        }
+      }
+
+      throw new Error("Kunne ikke lage unik romkode. Prøv igjen.");
+    }
+
     async function createRoom() {
       if (!user) return;
 
-      const code = makeRoomCode();
-      const chess = new window.Chess();
+      if (!window.Chess) {
+        showStatus("Kunne ikke laste chess.js. Sjekk internett/CDN.");
+        return;
+      }
 
-      await set(ref(db, "games/" + code), {
-        code: code,
-        status: "waiting",
-        fen: chess.fen(),
-        turn: "w",
-        whiteUid: user.uid,
-        whiteName: getPlayerName(),
-        blackUid: "",
-        blackName: "",
-        createdAt: serverTimestamp(),
-        moves: []
-      });
+      try {
+        const code = await makeUniqueRoomCode();
+        const chess = new window.Chess();
 
-      enterRoom(code);
+        await set(ref(db, "games/" + code), {
+          code: code,
+          status: "waiting",
+          fen: chess.fen(),
+          turn: "w",
+          whiteUid: user.uid,
+          whiteName: getPlayerName(),
+          blackUid: "",
+          blackName: "",
+          createdAt: serverTimestamp(),
+          moves: []
+        });
+
+        enterRoom(code);
+      } catch (error) {
+        showStatus(error.message || "Kunne ikke lage rom akkurat nå.");
+      }
     }
 
     async function joinRoom() {
@@ -837,4 +860,44 @@
       }
 
       user = currentUser;
-      showStatus(
+      showStatus("Innlogget. Lag et rom eller bli med i et rom.");
+      renderBoard();
+    });
+
+    createRoomBtn.addEventListener("click", () => {
+      createRoom();
+    });
+
+    joinRoomBtn.addEventListener("click", () => {
+      joinRoom();
+    });
+
+    joinCodeInput.addEventListener("input", () => {
+      joinCodeInput.value = joinCodeInput.value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 5);
+    });
+
+    joinCodeInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        joinRoomBtn.click();
+      }
+    });
+
+    homeBtn.addEventListener("click", () => {
+      window.location.href = "./home.html";
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      if (activeRoomRef) {
+        off(activeRoomRef);
+      }
+
+      await signOut(auth);
+      window.location.href = "./index.html";
+    });
+  </script>
+
+</body>
+</html>

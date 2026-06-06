@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chess Loungen | Profil</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #f7efe4;
+      padding: 20px;
+      background:
+        linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.88)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(90, 58, 34, 0.18) 0px,
+          rgba(90, 58, 34, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 32px
+        ),
+        linear-gradient(135deg, #4d2f1a 0%, #2a180e 45%, #120b07 100%);
+    }
+
+    .app { max-width: 1050px; margin: 0 auto; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(18, 11, 7, 0.88);
+      border: 1px solid rgba(255, 220, 170, 0.14);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+      margin-bottom: 24px;
+    }
+
+    .logo { font-size: 22px; font-weight: bold; color: #fff0d9; }
+    .logo span { color: #e2b06d; }
+
+    .top-buttons { display: flex; gap: 10px; }
+
+    button {
+      padding: 13px 16px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: 0.18s ease;
+    }
+
+    .main-btn {
+      border: none;
+      background: linear-gradient(135deg, #e2b06d, #c88733);
+      color: #24150d;
+      box-shadow: 0 8px 20px rgba(200, 135, 51, 0.22);
+    }
+
+    .secondary-btn {
+      background: transparent;
+      color: #f2debf;
+      border: 1px solid rgba(255, 214, 160, 0.20);
+    }
+
+    button:hover { filter: brightness(1.06); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
+      border: 1px solid rgba(255, 216, 165, 0.13);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
+      padding: 24px;
+    }
+
+    .profile-top { text-align: center; }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 26px;
+      margin: 0 auto 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 46px;
+      background: rgba(255, 214, 160, 0.10);
+      border: 1px solid rgba(255, 216, 165, 0.14);
+    }
+
+    h1, h2 { color: #fff0d9; }
+    h1 { margin: 0 0 6px; font-size: 30px; }
+    h2 { margin: 0 0 14px; font-size: 23px; }
+
+    .muted { color: #bfa180; font-size: 14px; word-break: break-word; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255, 247, 236, 0.07);
+      border: 1px solid rgba(255, 217, 165, 0.10);
+    }
+
+    .stat span { display: block; color: #c7ad8e; font-size: 12px; margin-bottom: 6px; }
+    .stat strong { font-size: 24px; color: #fff4e6; }
+
+    label {
+      display: block;
+      margin: 0 0 7px;
+      font-size: 14px;
+      color: #f0dbc0;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      background: rgba(255, 247, 236, 0.08);
+      color: #fff4e6;
+      outline: none;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+
+    textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+    input::placeholder, textarea::placeholder { color: #c7ad8e; }
+
+    input:focus, textarea:focus {
+      border-color: rgba(255, 194, 107, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
+    }
+
+    .profile-details {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255, 214, 160, 0.10);
+      color: #d9c0a3;
+      line-height: 1.6;
+    }
+
+    .profile-details strong { color: #ffd59d; }
+
+    #statusMsg {
+      min-height: 22px;
+      margin-top: 14px;
+      color: #ffd59d;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 14px; }
+      header { flex-direction: column; align-items: stretch; text-align: center; }
+      .top-buttons { flex-direction: column; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">♟ <span>Chess</span> Loungen</div>
+      <div class="top-buttons">
+        <button type="button" class="secondary-btn" id="homeBtn">Hjem</button>
+        <button type="button" class="secondary-btn" id="playBtn">Spill</button>
+        <button type="button" class="secondary-btn" id="logoutBtn">Logg ut</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <div class="profile-top">
+          <div class="avatar">♞</div>
+          <h1 id="profileName">Laster profil...</h1>
+          <div class="muted" id="profileEmail">Sjekker innlogging...</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Elo</span><strong id="elo">800</strong></div>
+          <div class="stat"><span>Seire</span><strong id="wins">0</strong></div>
+          <div class="stat"><span>Tap</span><strong id="losses">0</strong></div>
+          <div class="stat"><span>Remis</span><strong id="draws">0</strong></div>
+        </div>
+
+        <div class="profile-details">
+          <div><strong>Favorittåpning:</strong> <span id="openingText">Ikke valgt enda</span></div>
+          <div><strong>Om meg:</strong> <span id="bioText">Ingen bio enda.</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Rediger spillerprofil</h2>
+
+        <label for="nameInput">Visningsnavn</label>
+        <input id="nameInput" maxlength="30" placeholder="F.eks. Thomas93" />
+
+        <label for="openingInput">Favorittåpning</label>
+        <input id="openingInput" maxlength="50" placeholder="F.eks. London, Italiensk, Siciliansk..." />
+
+        <label for="bioInput">Kort bio</label>
+        <textarea id="bioInput" maxlength="220" placeholder="Skriv litt om deg som sjakkspiller..."></textarea>
+
+        <button type="button" class="main-btn" id="saveBtn">Lagre profil</button>
+        <div id="statusMsg"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref,
+      get,
+      set,
+      update,
+      onValue,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
+      authDomain: "berlands-sjakk.firebaseapp.com",
+      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "berlands-sjakk",
+      storageBucket: "berlands-sjakk.firebasestorage.app",
+      messagingSenderId: "884597270594",
+      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const nameInput = document.getElementById("nameInput");
+    const openingInput = document.getElementById("openingInput");
+    const bioInput = document.getElementById("bioInput");
+    const openingText = document.getElementById("openingText");
+    const bioText = document.getElementById("bioText");
+    const statusMsg = document.getElementById("statusMsg");
+
+    let currentUser = null;
+
+    function setStatus(text) {
+      statusMsg.textContent = text;
+      setTimeout(() => {
+        if (statusMsg.textContent === text) statusMsg.textContent = "";
+      }, 2500);
+    }
+
+    function fillProfile(user, profile) {
+      const name = profile.name || user.displayName || "Sjakkspiller";
+      const opening = profile.favoriteOpening || "";
+      const bio = profile.bio || "";
+
+      profileName.textContent = name;
+      profileEmail.textContent = user.email || "Innlogget";
+      nameInput.value = name;
+      openingInput.value = opening;
+      bioInput.value = bio;
+      openingText.textContent = opening || "Ikke valgt enda";
+      bioText.textContent = bio || "Ingen bio enda.";
+
+      document.getElementById("elo").textContent = profile.elo ?? 800;
+      document.getElementById("wins").textContent = profile.wins ?? 0;
+      document.getElementById("losses").textContent = profile.losses ?? 0;
+      document.getElementById("draws").textContent = profile.draws ?? 0;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "./index.html";
+        return;
+      }
+
+      currentUser = user;
+
+      const userRef = ref(db, "users/" + user.uid);
+      const snap = await get(userRef);
+
+      if (!snap.exists()) {
+        await set(userRef, {
+          uid: user.uid,
+          email: user.email || "",
+          name: user.displayName || (user.email ? user.email.split("@")[0] : "Sjakkspiller"),
+          elo: 800,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          bio: "",
+          favoriteOpening: "",
+          createdAt: serverTimestamp(),
+          lastSeen: serverTimestamp()
+        });
+      } else {
+        await update(userRef, {
+          email: user.email || "",
+          lastSeen: serverTimestamp()
+        });
+      }
+
+      onValue(userRef, (snap) => {
+        fillProfile(user, snap.val() || {});
+      });
+    });
+
+    document.getElementById("saveBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+
+      const name = nameInput.value.trim().slice(0, 30) || "Sjakkspiller";
+      const favoriteOpening = openingInput.value.trim().slice(0, 50);
+      const bio = bioInput.value.trim().slice(0, 220);
+
+      try {
+        await updateProfile(currentUser, { displayName: name });
+        await update(ref(db, "users/" + currentUser.uid), {
+          uid: currentUser.uid,
+          name,
+          email: currentUser.email || "",
+          favoriteOpening,
+          bio,
+          lastUpdated: serverTimestamp(),
+          lastSeen: serverTimestamp()
+        });
+
+        setStatus("✅ Profilen er lagret.");
+      } catch (error) {
+        setStatus("❌ Kunne ikke lagre profilen akkurat nå.");
+      }
+    });
+
+    document.getElementById("homeBtn").addEventListener("click", () => {
+      window.location.href = "./home.html";
+    });
+
+    document.getElementById("playBtn").addEventListener("click", () => {
+      window.location.href = "./play.html";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "./index.html";
+    });
+  </script>
+</body>
+</html>
