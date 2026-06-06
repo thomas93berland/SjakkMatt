@@ -1,179 +1,458 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berlands Sjakk</title>
 
-<title>Berlands Sjakk</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-body{
-  margin:0;
-  background:#0a0a0a;
-  color:white;
-  font-family:Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #f7efe4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
 
-.box{
-  width:350px;
-  background:#111;
-  padding:25px;
-  border-radius:15px;
-  border:1px solid #ff8800;
-}
+      background:
+        linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.82)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(90, 58, 34, 0.18) 0px,
+          rgba(90, 58, 34, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 32px
+        ),
+        linear-gradient(135deg, #4d2f1a 0%, #2a180e 45%, #120b07 100%);
+    }
 
-h1{
-  text-align:center;
-  color:#ff8800;
-}
+    .page {
+      width: 100%;
+      max-width: 950px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      overflow: hidden;
+      border-radius: 26px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 220, 170, 0.12);
+      background: rgba(18, 11, 7, 0.88);
+      backdrop-filter: blur(4px);
+    }
 
-input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:none;
-  border-radius:8px;
-  background:#222;
-  color:white;
-}
+    .left {
+      position: relative;
+      padding: 42px 34px;
+      background:
+        linear-gradient(rgba(25, 14, 8, 0.78), rgba(25, 14, 8, 0.88)),
+        linear-gradient(135deg, #84542f 0%, #5a3821 45%, #2c1a10 100%);
+      border-right: 1px solid rgba(255, 214, 160, 0.10);
+    }
 
-button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  background:#ff8800;
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
-}
+    .left::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%),
+        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%);
+      background-size: 72px 72px;
+      background-position: 0 0, 36px 36px;
+      opacity: 0.16;
+      pointer-events: none;
+    }
 
-button:hover{
-  opacity:0.9;
-}
+    .brand {
+      position: relative;
+      z-index: 1;
+    }
 
-#msg{
-  text-align:center;
-  margin-top:15px;
-  color:#ff8800;
-}
-</style>
+    .small-label {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 228, 187, 0.10);
+      color: #f0d8b7;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255, 225, 180, 0.12);
+    }
+
+    .brand h1 {
+      margin: 0 0 10px 0;
+      font-size: 38px;
+      line-height: 1.1;
+      color: #fff2df;
+    }
+
+    .brand p {
+      margin: 0;
+      color: #ecd7bd;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 430px;
+    }
+
+    .feature-list {
+      position: relative;
+      z-index: 1;
+      margin-top: 34px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 240, 220, 0.08);
+      border: 1px solid rgba(255, 228, 187, 0.10);
+      color: #f3e1ca;
+    }
+
+    .feature .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 214, 160, 0.10);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #fff1dd;
+      font-size: 15px;
+    }
+
+    .feature span {
+      font-size: 13px;
+      color: #ead2b2;
+    }
+
+    .right {
+      padding: 34px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(rgba(19, 12, 8, 0.92), rgba(19, 12, 8, 0.96)),
+        linear-gradient(180deg, #2a1a11 0%, #140c08 100%);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 390px;
+      padding: 28px 24px;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
+      border: 1px solid rgba(255, 216, 165, 0.13);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
+    }
+
+    .card-top {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .card-top .piece {
+      font-size: 34px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .card-top h2 {
+      margin: 0 0 6px 0;
+      color: #fff0d9;
+      font-size: 28px;
+    }
+
+    .card-top p {
+      margin: 0;
+      color: #d9c0a3;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      color: #f0dbc0;
+      font-weight: bold;
+    }
+
+    .input-wrap {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      background: rgba(255, 247, 236, 0.08);
+      color: #fff4e6;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input::placeholder {
+      color: #c7ad8e;
+    }
+
+    input:focus {
+      border-color: rgba(255, 194, 107, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
+    }
+
+    .buttons {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: 0.18s ease;
+    }
+
+    #loginBtn {
+      background: linear-gradient(135deg, #e2b06d, #c88733);
+      color: #24150d;
+      box-shadow: 0 8px 20px rgba(200, 135, 51, 0.22);
+    }
+
+    #loginBtn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    #registerBtn {
+      background: transparent;
+      color: #f2debf;
+      border: 1px solid rgba(255, 214, 160, 0.18);
+    }
+
+    #registerBtn:hover {
+      background: rgba(255, 240, 220, 0.06);
+    }
+
+    #msg {
+      min-height: 22px;
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+      color: #ffd59d;
+    }
+
+    .card-footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #b89b79;
+    }
+
+    @media (max-width: 820px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .left {
+        padding: 28px 22px;
+      }
+
+      .right {
+        padding: 22px;
+      }
+
+      .brand h1 {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 22px 18px;
+      }
+
+      .brand h1 {
+        font-size: 28px;
+      }
+
+      .card-top h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="box">
+  <div class="page">
+    <div class="left">
+      <div class="brand">
+        <div class="small-label">♟ Velkommen til Berlands Sjakk</div>
+        <h1>En lun plass for sjakk, strategi og vennskap</h1>
+        <p>
+          Spill online mot vennene dine i en rolig og koselig sjakkverden med
+          varm treverk-stemning, konkurranse og Elo-rating.
+        </p>
+      </div>
 
-<h1>♟ Berlands Sjakk</h1>
+      <div class="feature-list">
+        <div class="feature">
+          <div class="icon">♟</div>
+          <div>
+            <strong>Spill mot venner</strong>
+            <span>Lag rom og utfordre folk du kjenner.</span>
+          </div>
+        </div>
 
-<input id="email" type="email" placeholder="E-post">
+        <div class="feature">
+          <div class="icon">🏆</div>
+          <div>
+            <strong>Elo og progresjon</strong>
+            <span>Bygg opp ratingen din kamp for kamp.</span>
+          </div>
+        </div>
 
-<input id="password" type="password" placeholder="Passord">
+        <div class="feature">
+          <div class="icon">🌙</div>
+          <div>
+            <strong>Koselig atmosfære</strong>
+            <span>Mørkt, varmt og inspirert av treverk og sjakkbrett.</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<button onclick="registerUser()">
-Registrer bruker
-</button>
+    <div class="right">
+      <div class="card">
+        <div class="card-top">
+          <span class="piece">♞</span>
+          <h2>Logg inn</h2>
+          <p>Registrer deg eller logg inn for å komme i gang</p>
+        </div>
 
-<button onclick="loginUser()">
-Logg inn
-</button>
+        <div class="input-wrap">
+          <label for="email">E-post</label>
+          <input id="email" type="email" placeholder="f.eks. test@test.no" />
+        </div>
 
-<div id="msg"></div>
+        <div class="input-wrap">
+          <label for="password">Passord</label>
+          <input id="password" type="password" placeholder="Minst 6 tegn" />
+        </div>
 
-</div>
+        <div class="buttons">
+          <button id="loginBtn">Logg inn</button>
+          <button id="registerBtn">Registrer bruker</button>
+        </div>
 
-<script type="module">
+        <div id="msg"></div>
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        <div class="card-footer">
+          ♜ Start Elo: 800 • Spill online • Bygg din profil
+        </div>
+      </div>
+    </div>
+  </div>
 
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <script type="module">
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
-  authDomain: "berlands-sjakk.firebaseapp.com",
-  databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "berlands-sjakk",
-  storageBucket: "berlands-sjakk.firebasestorage.app",
-  messagingSenderId: "884597270594",
-  appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
-};
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
+      authDomain: "berlands-sjakk.firebaseapp.com",
+      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "berlands-sjakk",
+      storageBucket: "berlands-sjakk.firebasestorage.app",
+      messagingSenderId: "884597270594",
+      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
+    };
 
-const msg = document.getElementById("msg");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-window.registerUser = async () => {
+    const msg = document.getElementById("msg");
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
 
-  const email =
-  document.getElementById("email").value;
+    function goHome() {
+      window.location.href = "./home.html";
+    }
 
-  const password =
-  document.getElementById("password").value;
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        msg.innerHTML = "✅ Du er allerede innlogget. Sender deg videre...";
+        setTimeout(goHome, 500);
+      }
+    });
 
-  try{
+    registerBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+      if (email === "" || password === "") {
+        msg.innerHTML = "❌ Skriv inn e-post og passord.";
+        return;
+      }
 
-    msg.innerHTML =
-    "✅ Bruker opprettet!";
+      try {
+        msg.innerHTML = "Oppretter bruker...";
+        await createUserWithEmailAndPassword(auth, email, password);
+        msg.innerHTML = "✅ Bruker opprettet! Sender deg videre...";
+        setTimeout(goHome, 700);
+      } catch (error) {
+        msg.innerHTML = "❌ " + error.code;
+      }
+    });
 
-  }catch(error){
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-    msg.innerHTML =
-    "❌ " + error.message;
+      if (email === "" || password === "") {
+        msg.innerHTML = "❌ Skriv inn e-post og passord.";
+        return;
+      }
 
-  }
-
-};
-
-window.loginUser = async () => {
-
-  const email =
-  document.getElementById("email").value;
-
-  const password =
-  document.getElementById("password").value;
-
-  try{
-
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    msg.innerHTML =
-    "✅ Innlogging vellykket!";
-
-    // senere:
-    // location.href = "dashboard.html";
-
-  }catch(error){
-
-    msg.innerHTML =
-    "❌ " + error.message;
-
-  }
-
-};
-
-</script>
+      try {
+        msg.innerHTML = "Logger inn...";
+        await signInWithEmailAndPassword(auth, email, password);
+        msg.innerHTML = "✅ Innlogging vellykket! Sender deg videre...";
+        setTimeout(goHome, 700);
+      } catch (error) {
+        msg.innerHTML = "❌ " + error.code;
+      }
+    });
+  </script>
 
 </body>
 </html>
