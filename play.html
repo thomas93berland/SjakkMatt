@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Berlands Sjakk | Spill</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #f7efe4;
+      padding: 16px;
+
+      background:
+        linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.9)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(90, 58, 34, 0.18) 0px,
+          rgba(90, 58, 34, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 16px,
+          rgba(60, 38, 21, 0.18) 32px
+        ),
+        linear-gradient(135deg, #4d2f1a 0%, #2a180e 45%, #120b07 100%);
+    }
+
+    .app {
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(18, 11, 7, 0.88);
+      border: 1px solid rgba(255, 220, 170, 0.14);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+      margin-bottom: 18px;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: bold;
+      color: #fff0d9;
+    }
+
+    .logo span {
+      color: #e2b06d;
+    }
+
+    .top-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .small-btn {
+      padding: 10px 14px;
+      border-radius: 13px;
+      border: 1px solid rgba(255, 214, 160, 0.22);
+      background: transparent;
+      color: #f2debf;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .small-btn:hover {
+      background: rgba(255, 240, 220, 0.07);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .board-card,
+    .side-card {
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
+      border: 1px solid rgba(255, 216, 165, 0.13);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
+    }
+
+    .board-card {
+      padding: 18px;
+    }
+
+    .game-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .player-box {
+      padding: 13px;
+      border-radius: 16px;
+      background: rgba(255, 247, 236, 0.07);
+      border: 1px solid rgba(255, 217, 165, 0.10);
+    }
+
+    .player-box span {
+      display: block;
+      font-size: 12px;
+      color: #c7ad8e;
+      margin-bottom: 5px;
+    }
+
+    .player-box strong {
+      color: #fff4e6;
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .board-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #board {
+      width: min(88vw, 620px);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 6px solid rgba(38, 23, 13, 0.95);
+      box-shadow: 0 18px 35px rgba(0,0,0,0.35);
+      background: #2a180e;
+    }
+
+    .square {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(28px, 7vw, 58px);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .light {
+      background: #d6b27d;
+      color: #fff;
+    }
+
+    .dark {
+      background: #815530;
+      color: #fff;
+    }
+
+    .square:hover {
+      filter: brightness(1.08);
+    }
+
+    .selected {
+      outline: 4px solid #ffd36f;
+      outline-offset: -4px;
+    }
+
+    .legal::after {
+      content: "";
+      width: 28%;
+      height: 28%;
+      border-radius: 999px;
+      background: rgba(30, 20, 10, 0.34);
+      position: absolute;
+    }
+
+    .capture::after {
+      content: "";
+      width: 78%;
+      height: 78%;
+      border-radius: 999px;
+      border: 4px solid rgba(60, 25, 12, 0.36);
+      position: absolute;
+    }
+
+    .coord {
+      position: absolute;
+      left: 5px;
+      bottom: 4px;
+      font-size: 10px;
+      color: rgba(35, 20, 10, 0.55);
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    .side-card {
+      padding: 20px;
+    }
+
+    .side-card h2 {
+      margin: 0 0 8px;
+      color: #fff0d9;
+      font-size: 24px;
+    }
+
+    .side-card p {
+      margin: 0 0 16px;
+      color: #d9c0a3;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .room-box {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 247, 236, 0.07);
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      margin-bottom: 14px;
+    }
+
+    .room-code {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      color: #ffd59d;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      color: #f0dbc0;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 217, 165, 0.10);
+      background: rgba(255, 247, 236, 0.08);
+      color: #fff4e6;
+      outline: none;
+      font-size: 15px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    input::placeholder {
+      color: #c7ad8e;
+      text-transform: none;
+    }
+
+    input:focus {
+      border-color: rgba(255, 194, 107, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
+    }
+
+    .main-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      background: linear-gradient(135deg, #e2b06d, #c88733);
+      color: #24150d;
+      box-shadow: 0 8px 20px rgba(200, 135, 51, 0.22);
+      margin-bottom: 10px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      background: transparent;
+      color: #f2debf;
+      border: 1px solid rgba(255, 214, 160, 0.20);
+      margin-bottom: 10px;
+    }
+
+    .main-btn:hover,
+    .secondary-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    #status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 15px;
+      background: rgba(255, 247, 236, 0.06);
+      color: #ffd59d;
+      font-size: 14px;
+      line-height: 1.45;
+      min-height: 45px;
+      text-align: center;
+    }
+
+    .moves {
+      margin-top: 14px;
+      max-height: 190px;
+      overflow-y: auto;
+      padding: 12px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255, 214, 160, 0.10);
+      color: #d9c0a3;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .moves strong {
+      color: #ffd59d;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 12px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .top-buttons {
+        flex-direction: column;
+      }
+
+      .game-info {
+        grid-template-columns: 1fr;
+      }
+
+      #board {
+        width: 94vw;
+        border-width: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header>
+      <div class="logo">♟ <span>Berlands</span> Sjakk</div>
+
+      <div class="top-buttons">
+        <button class="small-btn" id="homeBtn">Hjem</button>
+        <button class="small-btn" id="logoutBtn">Logg ut</button>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <main class="board-card">
+
+        <div class="game-info">
+          <div class="player-box">
+            <span>Hvit</span>
+            <strong id="whitePlayer">Venter...</strong>
+          </div>
+
+          <div class="player-box">
+            <span>Svart</span>
+            <strong id="blackPlayer">Venter...</strong>
+          </div>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board"></div>
+        </div>
+
+      </main>
+
+      <aside class="side-card">
+        <h2>Online kamp</h2>
+        <p>
+          Lag et rom og del koden med en registrert bruker.
+          Når vennen din skriver inn koden, blir de svart.
+        </p>
+
+        <button class="main-btn" id="createRoomBtn">Lag nytt rom</button>
+
+        <label for="joinCode">Bli med i rom</label>
+        <input id="joinCode" placeholder="Skriv romkode" maxlength="6" />
+
+        <button class="secondary-btn" id="joinRoomBtn">Bli med</button>
+
+        <div class="room-box">
+          <div>Romkode:</div>
+          <div class="room-code" id="roomCode">------</div>
+        </div>
+
+        <div id="status">Logg inn og lag eller bli med i et rom.</div>
+
+        <div class="moves" id="moves">
+          <strong>Trekk:</strong><br>
+          Ingen trekk enda.
+        </div>
+      </aside>
+
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+  <script type="module">
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      update,
+      onValue,
+      off,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
+      authDomain: "berlands-sjakk.firebaseapp.com",
+      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "berlands-sjakk",
+      storageBucket: "berlands-sjakk.firebasestorage.app",
+      messagingSenderId: "884597270594",
+      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const boardEl = document.getElementById("board");
+    const statusEl = document.getElementById("status");
+    const roomCodeEl = document.getElementById("roomCode");
+    const whitePlayerEl = document.getElementById("whitePlayer");
+    const blackPlayerEl = document.getElementById("blackPlayer");
+    const movesEl = document.getElementById("moves");
+
+    const createRoomBtn = document.getElementById("createRoomBtn");
+    const joinRoomBtn = document.getElementById("joinRoomBtn");
+    const joinCodeInput = document.getElementById("joinCode");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const homeBtn = document.getElementById("homeBtn");
+
+    let user = null;
+    let activeRoom = null;
+    let activeRoomRef = null;
+    let activeGameData = null;
+    let playerColor = null;
+    let selectedSquare = null;
+    let legalTargets = [];
+
+    const pieceMap = {
+      wp: "♙",
+      wn: "♘",
+      wb: "♗",
+      wr: "♖",
+      wq: "♕",
+      wk: "♔",
+      bp: "♟",
+      bn: "♞",
+      bb: "♝",
+      br: "♜",
+      bq: "♛",
+      bk: "♚"
+    };
+
+    function getPlayerName() {
+      if (!user) return "Ukjent spiller";
+      return user.displayName || user.email || "Sjakkspiller";
+    }
+
+    function makeRoomCode() {
+      const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+
+      for (let i = 0; i < 5; i++) {
+        code += letters[Math.floor(Math.random() * letters.length)];
+      }
+
+      return code;
+    }
+
+    function showStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function getChess() {
+      if (!window.Chess) {
+        showStatus("Kunne ikke laste chess.js. Sjekk internett/CDN.");
+        return null;
+      }
+
+      const chess = new window.Chess();
+
+      if (activeGameData && activeGameData.fen) {
+        chess.load(activeGameData.fen);
+      }
+
+      return chess;
+    }
+
+    function renderBoard() {
+      const chess = getChess();
+      if (!chess) return;
+
+      boardEl.innerHTML = "";
+
+      const filesWhite = ["a", "b", "c", "d", "e", "f", "g", "h"];
+      const ranksWhite = [8, 7, 6, 5, 4, 3, 2, 1];
+
+      const filesBlack = ["h", "g", "f", "e", "d", "c", "b", "a"];
+      const ranksBlack = [1, 2, 3, 4, 5, 6, 7, 8];
+
+      const files = playerColor === "black" ? filesBlack : filesWhite;
+      const ranks = playerColor === "black" ? ranksBlack : ranksWhite;
+
+      for (let r = 0; r < 8; r++) {
+        for (let f = 0; f < 8; f++) {
+          const squareName = files[f] + ranks[r];
+          const piece = chess.get(squareName);
+
+          const square = document.createElement("div");
+          square.classList.add("square");
+
+          const isLight = (r + f) % 2 === 0;
+          square.classList.add(isLight ? "light" : "dark");
+
+          if (selectedSquare === squareName) {
+            square.classList.add("selected");
+          }
+
+          const legalMove = legalTargets.find(move => move.to === squareName);
+          if (legalMove) {
+            if (piece) {
+              square.classList.add("capture");
+            } else {
+              square.classList.add("legal");
+            }
+          }
+
+          if (piece) {
+            square.textContent = pieceMap[piece.color + piece.type];
+          }
+
+          const coord = document.createElement("span");
+          coord.classList.add("coord");
+          coord.textContent = squareName.toUpperCase();
+          square.appendChild(coord);
+
+          square.addEventListener("click", () => handleSquareClick(squareName));
+
+          boardEl.appendChild(square);
+        }
+      }
+    }
+
+    function updateGameText() {
+      if (!activeGameData) {
+        whitePlayerEl.textContent = "Venter...";
+        blackPlayerEl.textContent = "Venter...";
+        roomCodeEl.textContent = activeRoom || "------";
+        movesEl.innerHTML = "<strong>Trekk:</strong><br>Ingen trekk enda.";
+        return;
+      }
+
+      whitePlayerEl.textContent = activeGameData.whiteName || "Hvit";
+      blackPlayerEl.textContent = activeGameData.blackName || "Venter på svart...";
+      roomCodeEl.textContent = activeRoom || "------";
+
+      const chess = getChess();
+      if (!chess) return;
+
+      if (activeGameData.status === "waiting") {
+        showStatus("Venter på at en venn blir med. Del romkoden.");
+      } else if (activeGameData.status === "finished") {
+        showStatus(activeGameData.result || "Partiet er ferdig.");
+      } else {
+        const turnText = chess.turn() === "w" ? "Hvit sin tur" : "Svart sin tur";
+        const yourColorText = playerColor ? `Du spiller ${playerColor === "white" ? "hvit" : "svart"}.` : "Du ser på.";
+        showStatus(`${turnText}. ${yourColorText}`);
+      }
+
+      if (activeGameData.moves && Array.isArray(activeGameData.moves)) {
+        if (activeGameData.moves.length === 0) {
+          movesEl.innerHTML = "<strong>Trekk:</strong><br>Ingen trekk enda.";
+        } else {
+          movesEl.innerHTML =
+            "<strong>Trekk:</strong><br>" +
+            activeGameData.moves.map((m, i) => `${i + 1}. ${m}`).join("<br>");
+        }
+      }
+    }
+
+    function isMyTurn(chess) {
+      if (!playerColor) return false;
+
+      if (activeGameData.status !== "playing") return false;
+
+      if (playerColor === "white" && chess.turn() === "w") return true;
+      if (playerColor === "black" && chess.turn() === "b") return true;
+
+      return false;
+    }
+
+    function handleSquareClick(squareName) {
+      if (!activeGameData || !activeRoom) {
+        showStatus("Lag eller bli med i et rom først.");
+        return;
+      }
+
+      const chess = getChess();
+      if (!chess) return;
+
+      if (!isMyTurn(chess)) {
+        showStatus("Det er ikke din tur akkurat nå.");
+        return;
+      }
+
+      const piece = chess.get(squareName);
+      const myPieceColor = playerColor === "white" ? "w" : "b";
+
+      if (!selectedSquare) {
+        if (!piece) return;
+
+        if (piece.color !== myPieceColor) {
+          showStatus("Du kan bare flytte dine egne brikker.");
+          return;
+        }
+
+        selectedSquare = squareName;
+        legalTargets = chess.moves({
+          square: squareName,
+          verbose: true
+        });
+
+        renderBoard();
+        return;
+      }
+
+      if (selectedSquare === squareName) {
+        selectedSquare = null;
+        legalTargets = [];
+        renderBoard();
+        return;
+      }
+
+      const move = chess.move({
+        from: selectedSquare,
+        to: squareName,
+        promotion: "q"
+      });
+
+      if (!move) {
+        if (piece && piece.color === myPieceColor) {
+          selectedSquare = squareName;
+          legalTargets = chess.moves({
+            square: squareName,
+            verbose: true
+          });
+          renderBoard();
+          return;
+        }
+
+        showStatus("Ulovlig trekk.");
+        selectedSquare = null;
+        legalTargets = [];
+        renderBoard();
+        return;
+      }
+
+      selectedSquare = null;
+      legalTargets = [];
+
+      saveMove(chess, move);
+    }
+
+    async function saveMove(chess, move) {
+      let status = "playing";
+      let result = "";
+
+      if (chess.in_checkmate()) {
+        status = "finished";
+        const winner = move.color === "w" ? "Hvit" : "Svart";
+        result = `Sjakk matt! ${winner} vant.`;
+      } else if (chess.in_draw()) {
+        status = "finished";
+        result = "Partiet endte med remis.";
+      } else if (chess.in_check()) {
+        result = "Sjakk!";
+      }
+
+      const oldMoves = activeGameData.moves || [];
+      const newMoves = [...oldMoves, move.san];
+
+      await update(ref(db, "games/" + activeRoom), {
+        fen: chess.fen(),
+        turn: chess.turn(),
+        status: status,
+        result: result,
+        moves: newMoves,
+        lastMoveAt: serverTimestamp()
+      });
+    }
+
+    async function createRoom() {
+      if (!user) return;
+
+      const code = makeRoomCode();
+      const chess = new window.Chess();
+
+      await set(ref(db, "games/" + code), {
+        code: code,
+        status: "waiting",
+        fen: chess.fen(),
+        turn: "w",
+        whiteUid: user.uid,
+        whiteName: getPlayerName(),
+        blackUid: "",
+        blackName: "",
+        createdAt: serverTimestamp(),
+        moves: []
+      });
+
+      enterRoom(code);
+    }
+
+    async function joinRoom() {
+      if (!user) return;
+
+      const code = joinCodeInput.value.trim().toUpperCase();
+
+      if (!code) {
+        showStatus("Skriv inn romkode først.");
+        return;
+      }
+
+      const roomRef = ref(db, "games/" + code);
+      const snap = await get(roomRef);
+
+      if (!snap.exists()) {
+        showStatus("Fant ikke rommet. Sjekk romkoden.");
+        return;
+      }
+
+      const game = snap.val();
+
+      if (game.whiteUid === user.uid || game.blackUid === user.uid) {
+        enterRoom(code);
+        return;
+      }
+
+      if (game.blackUid) {
+        showStatus("Rommet er allerede fullt.");
+        return;
+      }
+
+      await update(roomRef, {
+        blackUid: user.uid,
+        blackName: getPlayerName(),
+        status: "playing"
+      });
+
+      enterRoom(code);
+    }
+
+    function enterRoom(code) {
+      if (activeRoomRef) {
+        off(activeRoomRef);
+      }
+
+      activeRoom = code;
+      activeRoomRef = ref(db, "games/" + code);
+
+      onValue(activeRoomRef, (snap) => {
+        if (!snap.exists()) {
+          showStatus("Rommet finnes ikke lenger.");
+          return;
+        }
+
+        activeGameData = snap.val();
+
+        if (activeGameData.whiteUid === user.uid) {
+          playerColor = "white";
+        } else if (activeGameData.blackUid === user.uid) {
+          playerColor = "black";
+        } else {
+          playerColor = null;
+        }
+
+        updateGameText();
+        renderBoard();
+      });
+    }
+
+    onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        window.location.href = "./index.html";
+        return;
+      }
+
+      user = currentUser;
+      showStatus(
