@@ -3,314 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Chess Loungen</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: #f7efe4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-
-      background:
-        linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.82)),
-        repeating-linear-gradient(
-          90deg,
-          rgba(90, 58, 34, 0.18) 0px,
-          rgba(90, 58, 34, 0.18) 16px,
-          rgba(60, 38, 21, 0.18) 16px,
-          rgba(60, 38, 21, 0.18) 32px
-        ),
-        linear-gradient(135deg, #4d2f1a 0%, #2a180e 45%, #120b07 100%);
-    }
-
-    .page {
-      width: 100%;
-      max-width: 950px;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      overflow: hidden;
-      border-radius: 26px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 220, 170, 0.12);
-      background: rgba(18, 11, 7, 0.88);
-      backdrop-filter: blur(4px);
-    }
-
-    .left {
-      position: relative;
-      padding: 42px 34px;
-      background:
-        linear-gradient(rgba(25, 14, 8, 0.78), rgba(25, 14, 8, 0.88)),
-        linear-gradient(135deg, #84542f 0%, #5a3821 45%, #2c1a10 100%);
-      border-right: 1px solid rgba(255, 214, 160, 0.10);
-    }
-
-    .left::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%),
-        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%);
-      background-size: 72px 72px;
-      background-position: 0 0, 36px 36px;
-      opacity: 0.16;
-      pointer-events: none;
-    }
-
-    .brand {
-      position: relative;
-      z-index: 1;
-    }
-
-    .small-label {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255, 228, 187, 0.10);
-      color: #f0d8b7;
-      font-size: 13px;
-      letter-spacing: 0.4px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(255, 225, 180, 0.12);
-    }
-
-    .brand h1 {
-      margin: 0 0 10px 0;
-      font-size: 38px;
-      line-height: 1.1;
-      color: #fff2df;
-    }
-
-    .brand p {
-      margin: 0;
-      color: #ecd7bd;
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 430px;
-    }
-
-    .feature-list {
-      position: relative;
-      z-index: 1;
-      margin-top: 34px;
-      display: grid;
-      gap: 14px;
-    }
-
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 240, 220, 0.08);
-      border: 1px solid rgba(255, 228, 187, 0.10);
-      color: #f3e1ca;
-    }
-
-    .feature .icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 214, 160, 0.10);
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .feature strong {
-      display: block;
-      margin-bottom: 3px;
-      color: #fff1dd;
-      font-size: 15px;
-    }
-
-    .feature span {
-      font-size: 13px;
-      color: #ead2b2;
-    }
-
-    .right {
-      padding: 34px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        linear-gradient(rgba(19, 12, 8, 0.92), rgba(19, 12, 8, 0.96)),
-        linear-gradient(180deg, #2a1a11 0%, #140c08 100%);
-    }
-
-    .card {
-      width: 100%;
-      max-width: 390px;
-      padding: 28px 24px;
-      border-radius: 22px;
-      background:
-        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
-      border: 1px solid rgba(255, 216, 165, 0.13);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
-    }
-
-    .card-top {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .card-top .piece {
-      font-size: 34px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .card-top h2 {
-      margin: 0 0 6px 0;
-      color: #fff0d9;
-      font-size: 28px;
-    }
-
-    .card-top p {
-      margin: 0;
-      color: #d9c0a3;
-      font-size: 14px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 14px;
-      color: #f0dbc0;
-      font-weight: bold;
-    }
-
-    .input-wrap {
-      margin-bottom: 15px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 217, 165, 0.10);
-      background: rgba(255, 247, 236, 0.08);
-      color: #fff4e6;
-      outline: none;
-      font-size: 15px;
-    }
-
-    input::placeholder {
-      color: #c7ad8e;
-    }
-
-    input:focus {
-      border-color: rgba(255, 194, 107, 0.55);
-      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
-    }
-
-    .buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 15px;
-      transition: 0.18s ease;
-    }
-
-    #loginBtn {
-      background: linear-gradient(135deg, #e2b06d, #c88733);
-      color: #24150d;
-      box-shadow: 0 8px 20px rgba(200, 135, 51, 0.22);
-    }
-
-    #loginBtn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.04);
-    }
-
-    #registerBtn {
-      background: transparent;
-      color: #f2debf;
-      border: 1px solid rgba(255, 214, 160, 0.18);
-    }
-
-    #registerBtn:hover {
-      background: rgba(255, 240, 220, 0.06);
-    }
-
-    #msg {
-      min-height: 22px;
-      margin-top: 16px;
-      text-align: center;
-      font-size: 14px;
-      color: #ffd59d;
-    }
-
-    .card-footer {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 12px;
-      color: #b89b79;
-    }
-
-    @media (max-width: 820px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .left {
-        padding: 28px 22px;
-      }
-
-      .right {
-        padding: 22px;
-      }
-
-      .brand h1 {
-        font-size: 32px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 22px 18px;
-      }
-
-      .brand h1 {
-        font-size: 28px;
-      }
-
-      .card-top h2 {
-        font-size: 24px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css" />
 </head>
-<body>
+
+<body class="login-page">
 
   <div class="page">
+
     <div class="left">
       <div class="brand">
         <div class="small-label">♟ Velkommen til Chess Loungen</div>
+
         <h1>En lun plass for sjakk, strategi og vennskap</h1>
+
         <p>
           Spill online mot vennene dine i en rolig og koselig sjakkverden med
           varm treverkstemning, konkurranse og Elo-rating.
@@ -345,11 +53,11 @@
     </div>
 
     <div class="right">
-      <div class="card">
+      <div class="card login-card">
         <div class="card-top">
           <span class="piece">♞</span>
           <h2>Logg inn</h2>
-          <p>Registrer deg eller logg inn for å komme i gang</p>
+          <p>Registrer deg eller logg inn for å komme i gang.</p>
         </div>
 
         <div class="input-wrap">
@@ -363,8 +71,8 @@
         </div>
 
         <div class="buttons">
-          <button type="button" id="loginBtn">Logg inn</button>
-          <button type="button" id="registerBtn">Registrer bruker</button>
+          <button type="button" class="main-btn" id="loginBtn">Logg inn</button>
+          <button type="button" class="secondary-btn" id="registerBtn">Registrer bruker</button>
         </div>
 
         <div id="msg"></div>
@@ -374,135 +82,9 @@
         </div>
       </div>
     </div>
+
   </div>
 
-  <script type="module">
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    import {
-      getDatabase,
-      ref,
-      set,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
-      authDomain: "berlands-sjakk.firebaseapp.com",
-      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "berlands-sjakk",
-      storageBucket: "berlands-sjakk.firebasestorage.app",
-      messagingSenderId: "884597270594",
-      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const msg = document.getElementById("msg");
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-
-    function getFriendlyError(error) {
-      const messages = {
-        "auth/invalid-email": "Ugyldig e-postadresse.",
-        "auth/missing-password": "Skriv inn passord.",
-        "auth/weak-password": "Passordet må ha minst 6 tegn.",
-        "auth/email-already-in-use": "Denne e-posten er allerede registrert.",
-        "auth/user-not-found": "Fant ingen bruker med denne e-posten.",
-        "auth/wrong-password": "Feil passord.",
-        "auth/invalid-credential": "Feil e-post eller passord."
-      };
-
-      return messages[error.code] || error.code || "Noe gikk galt.";
-    }
-
-
-    function goHome() {
-      window.location.href = "./home.html";
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        msg.textContent = "✅ Du er allerede innlogget. Sender deg videre...";
-        setTimeout(goHome, 500);
-      }
-    });
-
-    registerBtn.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (email === "" || password === "") {
-        msg.textContent = "❌ Skriv inn e-post og passord.";
-        return;
-      }
-
-      try {
-        msg.textContent = "Oppretter bruker...";
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        await set(ref(db, "users/" + user.uid), {
-          uid: user.uid,
-          name: email.split("@")[0],
-          email: email,
-          elo: 800,
-          wins: 0,
-          losses: 0,
-          draws: 0,
-          bio: "",
-          favoriteOpening: "",
-          createdAt: serverTimestamp(),
-          lastSeen: serverTimestamp()
-        });
-
-        msg.textContent = "✅ Bruker opprettet! Sender deg videre...";
-        setTimeout(goHome, 700);
-      } catch (error) {
-        msg.textContent = "❌ " + getFriendlyError(error);
-      }
-    });
-
-    loginBtn.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (email === "" || password === "") {
-        msg.textContent = "❌ Skriv inn e-post og passord.";
-        return;
-      }
-
-      try {
-        msg.textContent = "Logger inn...";
-        await signInWithEmailAndPassword(auth, email, password);
-        msg.textContent = "✅ Innlogging vellykket! Sender deg videre...";
-        setTimeout(goHome, 700);
-      } catch (error) {
-        msg.textContent = "❌ " + getFriendlyError(error);
-      }
-    });
-
-    [emailInput, passwordInput].forEach((input) => {
-      input.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          loginBtn.click();
-        }
-      });
-    });
-  </script>
-
+  <script type="module" src="./js/auth.js"></script>
 </body>
 </html>

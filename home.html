@@ -6,453 +6,7 @@
 
   <title>Chess Loungen | Hjem</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: #f7efe4;
-      padding: 20px;
-
-      background:
-        linear-gradient(rgba(20, 12, 7, 0.72), rgba(20, 12, 7, 0.88)),
-        repeating-linear-gradient(
-          90deg,
-          rgba(90, 58, 34, 0.18) 0px,
-          rgba(90, 58, 34, 0.18) 16px,
-          rgba(60, 38, 21, 0.18) 16px,
-          rgba(60, 38, 21, 0.18) 32px
-        ),
-        linear-gradient(135deg, #4d2f1a 0%, #2a180e 45%, #120b07 100%);
-    }
-
-    .app {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      padding: 18px 20px;
-      border-radius: 22px;
-      background: rgba(18, 11, 7, 0.88);
-      border: 1px solid rgba(255, 220, 170, 0.14);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
-      margin-bottom: 24px;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-      color: #fff0d9;
-    }
-
-    .logo span {
-      color: #e2b06d;
-    }
-
-    .logout {
-      padding: 11px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 214, 160, 0.22);
-      background: transparent;
-      color: #f2debf;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .logout:hover {
-      background: rgba(255, 240, 220, 0.07);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 22px;
-      margin-bottom: 22px;
-    }
-
-    .welcome-card,
-    .profile-card,
-    .menu-card {
-      border-radius: 24px;
-      background:
-        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
-      border: 1px solid rgba(255, 216, 165, 0.13);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
-    }
-
-    .welcome-card {
-      padding: 34px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .welcome-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%),
-        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%);
-      background-size: 74px 74px;
-      background-position: 0 0, 37px 37px;
-      opacity: 0.12;
-      pointer-events: none;
-    }
-
-    .welcome-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 8px 13px;
-      border-radius: 999px;
-      background: rgba(255, 228, 187, 0.10);
-      color: #f0d8b7;
-      font-size: 13px;
-      border: 1px solid rgba(255, 225, 180, 0.12);
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: 38px;
-      line-height: 1.1;
-      color: #fff2df;
-    }
-
-    .welcome-card p {
-      margin: 0;
-      color: #e6c9a7;
-      line-height: 1.6;
-      max-width: 570px;
-    }
-
-    .profile-card {
-      padding: 24px;
-    }
-
-    .profile-top {
-      text-align: center;
-      margin-bottom: 18px;
-    }
-
-    .avatar {
-      width: 74px;
-      height: 74px;
-      border-radius: 22px;
-      margin: 0 auto 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 38px;
-      background: rgba(255, 214, 160, 0.10);
-      border: 1px solid rgba(255, 216, 165, 0.14);
-    }
-
-    .profile-top h2 {
-      margin: 0 0 5px;
-      color: #fff0d9;
-      font-size: 22px;
-    }
-
-    .profile-top p {
-      margin: 0;
-      color: #bfa180;
-      font-size: 13px;
-      word-break: break-word;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .stat {
-      text-align: center;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255, 247, 236, 0.07);
-      border: 1px solid rgba(255, 217, 165, 0.10);
-    }
-
-    .stat span {
-      display: block;
-      color: #c7ad8e;
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-
-    .stat strong {
-      font-size: 22px;
-      color: #fff4e6;
-    }
-
-    .section-title {
-      margin: 28px 0 14px;
-      color: #fff0d9;
-      font-size: 22px;
-    }
-
-    .menu {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .menu-card {
-      padding: 22px;
-      cursor: pointer;
-      transition: 0.18s ease;
-      min-height: 165px;
-    }
-
-    .menu-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(226, 176, 109, 0.50);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.38), 0 0 22px rgba(226,176,109,0.12);
-    }
-
-    .menu-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 214, 160, 0.10);
-      border: 1px solid rgba(255, 216, 165, 0.12);
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-
-    .menu-card h3 {
-      margin: 0 0 8px;
-      color: #ffd59d;
-      font-size: 18px;
-    }
-
-    .menu-card p {
-      margin: 0;
-      color: #d9c0a3;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .main-btn {
-      padding: 15px;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 15px;
-      background: linear-gradient(135deg, #e2b06d, #c88733);
-      color: #24150d;
-      box-shadow: 0 8px 20px rgba(200, 135, 51, 0.22);
-    }
-
-    .secondary-btn {
-      padding: 15px;
-      border-radius: 16px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 15px;
-      background: transparent;
-      color: #f2debf;
-      border: 1px solid rgba(255, 214, 160, 0.20);
-    }
-
-    .secondary-btn:hover,
-    .main-btn:hover {
-      filter: brightness(1.06);
-    }
-
-
-
-    .profile-actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .community-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .chat-card,
-    .online-card {
-      border-radius: 24px;
-      background:
-        linear-gradient(180deg, rgba(64, 41, 24, 0.92), rgba(35, 22, 14, 0.96));
-      border: 1px solid rgba(255, 216, 165, 0.13);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.30);
-      padding: 22px;
-    }
-
-    .chat-card h2,
-    .online-card h2 {
-      margin: 0 0 8px;
-      color: #fff0d9;
-      font-size: 22px;
-    }
-
-    .chat-card p,
-    .online-card p {
-      margin: 0 0 14px;
-      color: #d9c0a3;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .chat-window {
-      height: 260px;
-      overflow-y: auto;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.20);
-      border: 1px solid rgba(255, 214, 160, 0.10);
-      margin-bottom: 12px;
-    }
-
-    .chat-message {
-      padding: 10px 11px;
-      border-radius: 14px;
-      background: rgba(255, 247, 236, 0.07);
-      border: 1px solid rgba(255, 217, 165, 0.08);
-      margin-bottom: 9px;
-    }
-
-    .chat-message strong {
-      display: block;
-      color: #ffd59d;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    .chat-message span {
-      color: #f7efe4;
-      line-height: 1.45;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .chat-form {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-    }
-
-    .chat-form input {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 217, 165, 0.10);
-      background: rgba(255, 247, 236, 0.08);
-      color: #fff4e6;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .chat-form input::placeholder {
-      color: #c7ad8e;
-    }
-
-    .chat-form input:focus {
-      border-color: rgba(255, 194, 107, 0.55);
-      box-shadow: 0 0 0 3px rgba(255, 182, 82, 0.12);
-    }
-
-    .chat-form button {
-      white-space: nowrap;
-    }
-
-    .online-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .online-player {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border-radius: 15px;
-      background: rgba(255, 247, 236, 0.07);
-      border: 1px solid rgba(255, 217, 165, 0.10);
-      color: #f7efe4;
-    }
-
-    .online-player span {
-      color: #c7ad8e;
-      font-size: 13px;
-    }
-
-    #statusMsg {
-      margin-top: 16px;
-      color: #ffd59d;
-      text-align: center;
-      min-height: 20px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .menu,
-      .community-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 560px) {
-      body {
-        padding: 14px;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-      }
-
-      .welcome-card {
-        padding: 24px;
-      }
-
-      h1 {
-        font-size: 30px;
-      }
-
-      .menu,
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
@@ -465,20 +19,20 @@
     </header>
 
     <section class="hero">
+
       <div class="welcome-card">
         <div class="welcome-content">
           <div class="tag">🌙 Hjemmeside</div>
+
           <h1>Velkommen tilbake til brettet</h1>
+
           <p>
             Herfra kan du starte en kamp mot venner, sjekke ratingen din,
             se statistikk og etter hvert klatre på ranglisten.
           </p>
 
           <div class="quick-actions">
-            <button type="button" class="main-btn" id="playBtn">
-              🎮 Spill mot venn
-            </button>
-
+            <button type="button" class="main-btn" id="playBtn">🎮 Spill mot venn</button>
             <button type="button" class="secondary-btn" id="leaderboardBtn">🏆 Se rangliste</button>
           </div>
 
@@ -519,6 +73,7 @@
           <button type="button" class="secondary-btn" id="openProfileBtn">👤 Åpne min profil</button>
         </div>
       </div>
+
     </section>
 
     <h2 class="section-title">Velg hva du vil gjøre</h2>
@@ -549,7 +104,22 @@
       </div>
     </section>
 
+    <section class="invite-card">
+      <h2>📨 Spillinvitasjoner</h2>
+      <p>Her får du invitasjoner fra andre registrerte spillere. Du kan godta eller avslå.</p>
+
+      <div class="invite-list" id="invitesList">
+        <div class="invite-item">
+          <div>
+            <strong>Ingen invitasjoner akkurat nå</strong>
+            <span>Invitasjoner dukker opp her når noen utfordrer deg.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="community-grid">
+
       <div class="chat-card">
         <h2>💬 Chatrom</h2>
         <p>Snakk med andre registrerte spillere i Chess Loungen.</p>
@@ -569,270 +139,20 @@
 
       <div class="online-card">
         <h2>♟ Spillere</h2>
-        <p>Her ser du registrerte spillere som har profil i databasen.</p>
+        <p>Her ser du registrerte spillere. Trykk Inviter for å sende en spillinvitasjon.</p>
+
         <div class="online-list" id="playersList">
-          <div class="online-player"><strong>Laster spillere...</strong><span></span></div>
+          <div class="online-player">
+            <strong>Laster spillere...</strong>
+            <span></span>
+          </div>
         </div>
       </div>
+
     </section>
 
   </div>
 
-  <script type="module">
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    import {
-      getDatabase,
-      ref,
-      get,
-      set,
-      update,
-      push,
-      onValue,
-      query,
-      limitToLast,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
-      authDomain: "berlands-sjakk.firebaseapp.com",
-      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "berlands-sjakk",
-      storageBucket: "berlands-sjakk.firebasestorage.app",
-      messagingSenderId: "884597270594",
-      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const username = document.getElementById("username");
-    const emailText = document.getElementById("emailText");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const statusMsg = document.getElementById("statusMsg");
-    const openProfileBtn = document.getElementById("openProfileBtn");
-    const chatWindow = document.getElementById("chatWindow");
-    const chatForm = document.getElementById("chatForm");
-    const chatInput = document.getElementById("chatInput");
-    const playersList = document.getElementById("playersList");
-
-    let currentUser = null;
-
-    async function ensureUserProfile(user) {
-      const userRef = ref(db, "users/" + user.uid);
-      const snap = await get(userRef);
-
-      if (!snap.exists()) {
-        await set(userRef, {
-          uid: user.uid,
-          name: user.displayName || (user.email ? user.email.split("@")[0] : "Sjakkspiller"),
-          email: user.email || "",
-          elo: 800,
-          wins: 0,
-          losses: 0,
-          draws: 0,
-          bio: "",
-          favoriteOpening: "",
-          createdAt: serverTimestamp(),
-          lastSeen: serverTimestamp()
-        });
-        return;
-      }
-
-      await update(userRef, {
-        email: user.email || "",
-        lastSeen: serverTimestamp()
-      });
-    }
-
-    function listenToMyProfile(user) {
-      onValue(ref(db, "users/" + user.uid), (snap) => {
-        const profile = snap.val() || {};
-        username.textContent = profile.name || user.displayName || "Sjakkspiller";
-        emailText.textContent = user.email || "Innlogget";
-        document.getElementById("elo").textContent = profile.elo ?? 800;
-        document.getElementById("wins").textContent = profile.wins ?? 0;
-        document.getElementById("losses").textContent = profile.losses ?? 0;
-        document.getElementById("draws").textContent = profile.draws ?? 0;
-      }, (error) => {
-        statusMsg.textContent = "Firebase-reglene stopper profilen: " + error.code;
-      });
-    }
-
-    function listenToChat() {
-      const chatQuery = query(ref(db, "loungeChat"), limitToLast(40));
-
-      onValue(chatQuery, (snap) => {
-        chatWindow.innerHTML = "";
-
-        if (!snap.exists()) {
-          const empty = document.createElement("div");
-          empty.className = "chat-message";
-          empty.innerHTML = "<strong>Chess Loungen</strong><span>Ingen meldinger enda. Start praten 🔥</span>";
-          chatWindow.appendChild(empty);
-          return;
-        }
-
-        snap.forEach((child) => {
-          const msg = child.val();
-          const item = document.createElement("div");
-          const name = document.createElement("strong");
-          const text = document.createElement("span");
-
-          item.className = "chat-message";
-          name.textContent = msg.name || "Sjakkspiller";
-          text.textContent = msg.text || "";
-
-          item.appendChild(name);
-          item.appendChild(text);
-          chatWindow.appendChild(item);
-        });
-
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-      }, (error) => {
-        chatWindow.innerHTML = "";
-        const message = document.createElement("div");
-        message.className = "chat-message";
-        message.innerHTML = "<strong>Chat virker ikke enda</strong><span>Firebase-reglene stopper chatten: " + error.code + "</span>";
-        chatWindow.appendChild(message);
-      });
-    }
-
-    function listenToPlayers() {
-      onValue(ref(db, "users"), (snap) => {
-        playersList.innerHTML = "";
-
-        if (!snap.exists()) {
-          playersList.innerHTML = "<div class='online-player'><strong>Ingen profiler enda</strong><span></span></div>";
-          return;
-        }
-
-        const players = [];
-        snap.forEach((child) => {
-          players.push(child.val());
-        });
-
-        players
-          .sort((a, b) => (b.elo || 800) - (a.elo || 800))
-          .slice(0, 8)
-          .forEach((player) => {
-            const row = document.createElement("div");
-            const name = document.createElement("strong");
-            const elo = document.createElement("span");
-
-            row.className = "online-player";
-            name.textContent = player.name || "Sjakkspiller";
-            elo.textContent = `Elo ${player.elo ?? 800}`;
-
-            row.appendChild(name);
-            row.appendChild(elo);
-            playersList.appendChild(row);
-          });
-      }, (error) => {
-        playersList.innerHTML = `<div class='online-player'><strong>Firebase-feil</strong><span>${error.code}</span></div>`;
-      });
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "./index.html";
-        return;
-      }
-
-      currentUser = user;
-
-      try {
-        await ensureUserProfile(user);
-      } catch (error) {
-        statusMsg.textContent = "Firebase-reglene stopper brukerprofilen: " + error.code;
-      }
-
-      listenToMyProfile(user);
-      listenToChat();
-      listenToPlayers();
-    });
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "./index.html";
-    });
-
-    function comingSoon(text) {
-      statusMsg.textContent = text + " kommer snart 🔥";
-      setTimeout(() => {
-        statusMsg.textContent = "";
-      }, 2500);
-    }
-
-    document.getElementById("playBtn").addEventListener("click", () => {
-      window.location.href = "./play.html";
-    });
-
-    document.getElementById("leaderboardBtn").addEventListener("click", () => {
-      comingSoon("Rangliste");
-    });
-
-    document.getElementById("friendGameCard").addEventListener("click", () => {
-      window.location.href = "./play.html";
-    });
-
-    document.getElementById("profileCard").addEventListener("click", () => {
-      window.location.href = "./profile.html";
-    });
-
-    openProfileBtn.addEventListener("click", () => {
-      window.location.href = "./profile.html";
-    });
-
-    document.getElementById("leaderboardCard").addEventListener("click", () => {
-      comingSoon("Rangliste");
-    });
-
-    document.getElementById("trainingCard").addEventListener("click", () => {
-      comingSoon("Sjakktrening");
-    });
-
-    chatForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      if (!currentUser) return;
-
-      const text = chatInput.value.trim();
-      if (!text) return;
-
-      chatInput.value = "";
-
-      try {
-        await push(ref(db, "loungeChat"), {
-          uid: currentUser.uid,
-          name: username.textContent || "Sjakkspiller",
-          text: text.slice(0, 220),
-          createdAt: serverTimestamp()
-        });
-      } catch (error) {
-        chatInput.value = text;
-        statusMsg.textContent = "Kunne ikke sende chatmelding: " + error.code;
-      }
-    });
-
-    document.querySelectorAll(".menu-card").forEach((card) => {
-      card.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          card.click();
-        }
-      });
-    });
-  </script>
-
+  <script type="module" src="./js/home.js"></script>
 </body>
 </html>
