@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Berlands Sjakk</title>
+
+<style>
+body{
+  margin:0;
+  background:#0a0a0a;
+  color:white;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.box{
+  width:350px;
+  background:#111;
+  padding:25px;
+  border-radius:15px;
+  border:1px solid #ff8800;
+}
+
+h1{
+  text-align:center;
+  color:#ff8800;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  background:#222;
+  color:white;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#ff8800;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+#msg{
+  text-align:center;
+  margin-top:15px;
+  color:#ff8800;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>♟ Berlands Sjakk</h1>
+
+<input id="email" type="email" placeholder="E-post">
+
+<input id="password" type="password" placeholder="Passord">
+
+<button onclick="registerUser()">
+Registrer bruker
+</button>
+
+<button onclick="loginUser()">
+Logg inn
+</button>
+
+<div id="msg"></div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
+  authDomain: "berlands-sjakk.firebaseapp.com",
+  databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "berlands-sjakk",
+  storageBucket: "berlands-sjakk.firebasestorage.app",
+  messagingSenderId: "884597270594",
+  appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const msg = document.getElementById("msg");
+
+window.registerUser = async () => {
+
+  const email =
+  document.getElementById("email").value;
+
+  const password =
+  document.getElementById("password").value;
+
+  try{
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    msg.innerHTML =
+    "✅ Bruker opprettet!";
+
+  }catch(error){
+
+    msg.innerHTML =
+    "❌ " + error.message;
+
+  }
+
+};
+
+window.loginUser = async () => {
+
+  const email =
+  document.getElementById("email").value;
+
+  const password =
+  document.getElementById("password").value;
+
+  try{
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    msg.innerHTML =
+    "✅ Innlogging vellykket!";
+
+    // senere:
+    // location.href = "dashboard.html";
+
+  }catch(error){
+
+    msg.innerHTML =
+    "❌ " + error.message;
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>
