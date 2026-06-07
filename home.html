@@ -3,139 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Chess Loungen | Hjem</title>
-
-  <style>
-    html { background:#120b07; }
-    body { margin:0; background:#120b07; color:#f7efe4; font-family:Arial,sans-serif; }
-  </style>
+  <title>The Chess Lounge | Hjem</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-
-<body data-page="home" class="home-page">
-
-  <div class="app home-app">
-
-    <header class="home-header">
-      <div class="logo">♟ <span>Chess</span> Loungen</div>
-      <button type="button" class="logout" id="logoutBtn">Logg ut</button>
+<body class="site-page" data-page="home">
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" type="button">☰</button>
+      <div class="site-logo">♔ <span>The Chess Lounge</span></div>
+      <button class="ghost-btn" id="logoutBtn" type="button">Logg ut</button>
     </header>
-
-    <section class="home-dashboard">
-      <div class="welcome-card home-welcome">
-        <div class="welcome-content">
-          <div class="tag">🌙 Chess Loungen</div>
-          <h1>Velkommen tilbake</h1>
-          <p>Alt du trenger ligger nå samlet i en ryddigere meny.</p>
-
-          <div class="quick-actions">
-            <button type="button" class="main-btn" id="playBtn">🎮 Spill mot venn</button>
-            <button type="button" class="secondary-btn" id="leaderboardBtn">🏆 Rangliste</button>
-          </div>
-
-          <div id="statusMsg"></div>
-        </div>
-      </div>
-
-      <div class="profile-card home-profile">
-        <div class="profile-top">
-          <div class="avatar">♞</div>
-          <h2 id="username">Laster spiller...</h2>
-          <p id="emailText">Sjekker innlogging...</p>
-        </div>
-
-        <div class="stats compact-stats">
-          <div class="stat"><span>Elo</span><strong id="elo">800</strong></div>
-          <div class="stat"><span>Seire</span><strong id="wins">0</strong></div>
-          <div class="stat"><span>Tap</span><strong id="losses">0</strong></div>
-          <div class="stat"><span>Remis</span><strong id="draws">0</strong></div>
-        </div>
-
-        <div class="profile-actions">
-          <button type="button" class="secondary-btn" id="openProfileBtn">👤 Min profil</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="home-menu-card">
-      <h2>☕ Meny</h2>
-      <p>Velg hva du vil gjøre i loungen.</p>
-
-      <div class="home-menu-grid">
-        <button type="button" class="menu-card menu-button" id="friendGameCard">
-          <div class="menu-icon">🎮</div>
-          <h3>Spill</h3>
-          <p>Lag rom eller spill mot en venn.</p>
-        </button>
-
-        <button type="button" class="menu-card menu-button" id="profileCard">
-          <div class="menu-icon">👤</div>
-          <h3>Profil</h3>
-          <p>Se rating, statistikk og bio.</p>
-        </button>
-
-        <button type="button" class="menu-card menu-button" id="leaderboardCard">
-          <div class="menu-icon">🏆</div>
-          <h3>Rangliste</h3>
-          <p>Se hvem som ligger øverst.</p>
-        </button>
-
-        <button type="button" class="menu-card menu-button" id="trainingCard">
-          <div class="menu-icon">♜</div>
-          <h3>Trening</h3>
-          <p>Taktikker og sjakk matt-mønstre.</p>
-        </button>
-      </div>
-    </section>
-
-    <section class="home-panels">
-      <details class="home-panel" open>
-        <summary>📨 Spillinvitasjoner</summary>
-        <p>Godta eller avslå invitasjoner fra andre registrerte spillere.</p>
-
-        <div class="invite-list" id="invitesList">
-          <div class="invite-item">
+    <div class="main-layout">
+      <aside class="side-menu" id="sideMenu">
+        <button class="menu-item active" type="button" data-panel="dashboardPanel">🏠 Oversikt</button>
+        <button class="menu-item" type="button" data-panel="playPanel">♟ Spill</button>
+        <button class="menu-item" type="button" data-panel="invitesPanel">✉ Invitasjoner</button>
+        <button class="menu-item" type="button" data-panel="playersPanel">👥 Spillere</button>
+        <button class="menu-item" type="button" data-panel="chatPanel">💬 Chat</button>
+        <button class="menu-item" type="button" data-panel="profilePanel">👤 Profil</button>
+      </aside>
+      <main class="content-area">
+        <section class="panel active" id="dashboardPanel">
+          <div class="welcome-box">
             <div>
-              <strong>Ingen invitasjoner akkurat nå</strong>
-              <span>Invitasjoner dukker opp her når noen utfordrer deg.</span>
+              <p class="eyebrow">Velkommen tilbake</p>
+              <h1 id="welcomeName">Laster spiller...</h1>
+              <p>Velg noe fra menyen. Hjemmesiden er ryddet ned slik at alt ikke ligger fremme samtidig.</p>
             </div>
+            <button class="primary-btn" id="quickPlayBtn" type="button">Start spill</button>
           </div>
-        </div>
-      </details>
-
-      <details class="home-panel">
-        <summary>♟ Registrerte spillere</summary>
-        <p>Trykk Inviter for å sende en spillinvitasjon.</p>
-
-        <div class="online-list" id="playersList">
-          <div class="online-player">
-            <strong>Laster spillere...</strong>
-            <span></span>
+          <div class="stats-grid">
+            <div class="stat-card"><span>Elo</span><strong id="elo">800</strong></div>
+            <div class="stat-card"><span>Seire</span><strong id="wins">0</strong></div>
+            <div class="stat-card"><span>Tap</span><strong id="losses">0</strong></div>
+            <div class="stat-card"><span>Remis</span><strong id="draws">0</strong></div>
           </div>
-        </div>
-      </details>
-
-      <details class="home-panel">
-        <summary>💬 Chatrom</summary>
-        <p>Snakk med andre spillere i Chess Loungen.</p>
-
-        <div class="chat-window" id="chatWindow">
-          <div class="chat-message">
-            <strong>Chess Loungen</strong>
-            <span>Laster chat...</span>
+        </section>
+        <section class="panel" id="playPanel">
+          <div class="section-head"><h2>Spill sjakk</h2><p>Lag et rom, bli med med romkode, eller inviter en registrert spiller.</p></div>
+          <div class="action-grid">
+            <button class="large-action" id="openPlayBtn" type="button"><strong>♟ Åpne spillrom</strong><span>Gå direkte til sjakkbrettet og lobbyen.</span></button>
+            <button class="large-action" type="button" data-panel="playersPanel"><strong>👥 Inviter spiller</strong><span>Velg en spiller fra listen og send invitasjon.</span></button>
           </div>
-        </div>
-
-        <form class="chat-form" id="chatForm">
-          <input id="chatInput" maxlength="220" placeholder="Skriv en melding..." autocomplete="off" />
-          <button type="submit" class="main-btn">Send</button>
-        </form>
-      </details>
-    </section>
-
+        </section>
+        <section class="panel" id="invitesPanel"><div class="section-head"><h2>Invitasjoner</h2><p>Godta eller avslå spillinvitasjoner fra andre spillere.</p></div><div class="list-box" id="invitesList"><div class="empty-state">Laster invitasjoner...</div></div></section>
+        <section class="panel" id="playersPanel"><div class="section-head"><h2>Registrerte spillere</h2><p>Send en invitasjon til en spiller. Hvit/svart trekkes tilfeldig.</p></div><div class="list-box" id="playersList"><div class="empty-state">Laster spillere...</div></div></section>
+        <section class="panel" id="chatPanel"><div class="section-head"><h2>Chatrom</h2><p>Et enkelt fellesrom for Chess Lounge-spillere.</p></div><div class="chat-window" id="chatWindow"><div class="empty-state">Laster chat...</div></div><form class="chat-form" id="chatForm"><input id="chatInput" maxlength="220" placeholder="Skriv en melding..." autocomplete="off" /><button class="primary-btn" type="submit">Send</button></form></section>
+        <section class="panel" id="profilePanel"><div class="section-head"><h2>Min profil</h2><p>Se og endre profilen din.</p></div><div class="profile-mini"><div class="avatar">♞</div><div><h3 id="profileNameMini">Laster...</h3><p id="profileEmailMini">Sjekker innlogging...</p></div></div><button class="primary-btn" id="openProfileBtn" type="button">Åpne profilside</button></section>
+        <div id="statusMsg" class="message"></div>
+      </main>
+    </div>
   </div>
-
   <script type="module" src="./app.js"></script>
 </body>
 </html>

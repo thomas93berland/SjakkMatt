@@ -3,90 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Chess Loungen | Spill</title>
-
-  <style>
-    html { background:#120b07; }
-    body { margin:0; background:#120b07; color:#f7efe4; font-family:Arial,sans-serif; }
-  </style>
+  <title>The Chess Lounge | Spill</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-
 <body class="play-page" data-page="play">
-
-  <div class="app play-app">
-
-    <header class="play-header">
-      <div class="logo">♟ <span>Chess</span> Loungen</div>
-
-      <div class="top-buttons">
-        <button type="button" class="small-btn" id="homeBtn">Hjem</button>
-        <button type="button" class="small-btn" id="logoutBtn">Logg ut</button>
-      </div>
-    </header>
-
-    <div class="layout play-layout">
-
-      <main class="board-card play-board-card">
-
-        <div class="game-info compact-game-info">
-          <div class="player-box">
-            <span>Hvit</span>
-            <strong id="whitePlayer">Venter...</strong>
-          </div>
-
-          <div class="player-box">
-            <span>Svart</span>
-            <strong id="blackPlayer">Venter...</strong>
-          </div>
-        </div>
-
-        <div class="board-wrap board-wrap-large">
-          <div id="board"></div>
-        </div>
-
-      </main>
-
-      <aside class="side-card play-lobby">
-        <div class="lobby-title">
-          <span>♟</span>
-          <div>
-            <h2>Spillrom</h2>
-            <p>Lag et rom, bli med med kode eller vent på en venn.</p>
-          </div>
-        </div>
-
-        <div class="lobby-section room-actions">
-          <button type="button" class="main-btn" id="createRoomBtn">Lag nytt rom</button>
-
-          <div class="join-row">
-            <label for="joinCode">Romkode</label>
-            <input id="joinCode" placeholder="F.eks. A7K9Q" maxlength="5" autocomplete="off" />
-            <button type="button" class="secondary-btn" id="joinRoomBtn">Bli med</button>
-          </div>
-        </div>
-
-        <div class="room-box lobby-room-box">
-          <span>Din romkode</span>
-          <div class="room-code" id="roomCode">------</div>
-        </div>
-
-        <div id="status">Laster sjakk...</div>
-
-        <details class="moves-panel" open>
-          <summary>Trekk</summary>
-          <div class="moves" id="moves">
-            <strong>Trekk:</strong><br>
-            Ingen trekk enda.
-          </div>
-        </details>
-      </aside>
-
-    </div>
-
-  </div>
-
+  <main class="play-shell">
+    <section class="game-area">
+      <div class="game-top"><div class="player-pill"><span>Hvit</span><strong id="whitePlayer">Venter...</strong></div><div class="game-center"><div class="room-code-big" id="roomCode">------</div><div id="status" class="game-status">Laster sjakk...</div></div><div class="player-pill"><span>Svart</span><strong id="blackPlayer">Venter...</strong></div></div>
+      <div class="board-frame"><div id="board"></div></div>
+    </section>
+    <aside class="play-drawer" id="playDrawer"><div class="drawer-head"><h2>Spillrom</h2><button class="ghost-btn" id="closeDrawerBtn" type="button">×</button></div><button class="primary-btn full" id="createRoomBtn" type="button">Lag nytt rom</button><label for="joinCode">Bli med i rom</label><input id="joinCode" maxlength="5" placeholder="Romkode" autocomplete="off" /><button class="ghost-btn full" id="joinRoomBtn" type="button">Bli med</button><div class="moves" id="moves"><strong>Trekk:</strong><br>Ingen trekk enda.</div><button class="ghost-btn full" id="homeBtn" type="button">Til hjem</button><button class="ghost-btn full" id="logoutBtn" type="button">Logg ut</button></aside>
+    <button class="floating-menu" id="openDrawerBtn" type="button">☰</button>
+  </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script type="module" src="./app.js"></script>
 </body>

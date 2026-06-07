@@ -3,96 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Chess Loungen | Profil</title>
-
-  
-  <style>
-    html { background:#120b07; }
-    body { margin:0; background:#120b07; color:#f7efe4; font-family:Arial,sans-serif; }
-  </style>
+  <title>The Chess Lounge | Profil</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-
-<body class="profile-page" data-page="profile">
-
-  <div class="app">
-
-    <header>
-      <div class="logo">♟ <span>Chess</span> Loungen</div>
-
-      <div class="top-buttons">
-        <button type="button" class="secondary-btn" id="homeBtn">Hjem</button>
-        <button type="button" class="secondary-btn" id="playBtn">Spill</button>
-        <button type="button" class="secondary-btn" id="logoutBtn">Logg ut</button>
-      </div>
-    </header>
-
-    <main class="profile-grid">
-
-      <section class="card">
-        <div class="profile-top">
-          <div class="avatar">♞</div>
-          <h1 id="profileName">Laster profil...</h1>
-          <div class="muted" id="profileEmail">Sjekker innlogging...</div>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <span>Elo</span>
-            <strong id="elo">800</strong>
-          </div>
-
-          <div class="stat">
-            <span>Seire</span>
-            <strong id="wins">0</strong>
-          </div>
-
-          <div class="stat">
-            <span>Tap</span>
-            <strong id="losses">0</strong>
-          </div>
-
-          <div class="stat">
-            <span>Remis</span>
-            <strong id="draws">0</strong>
-          </div>
-        </div>
-
-        <div class="profile-details">
-          <div>
-            <strong>Favorittåpning:</strong>
-            <span id="openingText">Ikke valgt enda</span>
-          </div>
-
-          <div>
-            <strong>Om meg:</strong>
-            <span id="bioText">Ingen bio enda.</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="card profile-form">
-        <h2>Rediger spillerprofil</h2>
-
-        <label for="nameInput">Visningsnavn</label>
-        <input id="nameInput" maxlength="30" placeholder="F.eks. Thomas93" />
-
-        <label for="openingInput">Favorittåpning</label>
-        <input id="openingInput" maxlength="50" placeholder="F.eks. London, Italiensk, Siciliansk..." />
-
-        <label for="bioInput">Kort bio</label>
-        <textarea id="bioInput" maxlength="220" placeholder="Skriv litt om deg som sjakkspiller..."></textarea>
-
-        <button type="button" class="main-btn" id="saveBtn">Lagre profil</button>
-
-        <div id="statusMsg"></div>
-      </section>
-
+<body class="site-page" data-page="profile">
+  <div class="app-shell">
+    <header class="topbar"><div class="site-logo">♔ <span>The Chess Lounge</span></div><div class="top-actions"><button class="ghost-btn" id="homeBtn" type="button">Hjem</button><button class="ghost-btn" id="playBtn" type="button">Spill</button><button class="ghost-btn" id="logoutBtn" type="button">Logg ut</button></div></header>
+    <main class="profile-page-grid">
+      <section class="card profile-card-main"><div class="avatar big">♞</div><h1 id="profileName">Laster profil...</h1><p id="profileEmail">Sjekker innlogging...</p><div class="stats-grid compact"><div class="stat-card"><span>Elo</span><strong id="elo">800</strong></div><div class="stat-card"><span>Seire</span><strong id="wins">0</strong></div><div class="stat-card"><span>Tap</span><strong id="losses">0</strong></div><div class="stat-card"><span>Remis</span><strong id="draws">0</strong></div></div></section>
+      <section class="card"><h2>Rediger profil</h2><label for="nameInput">Visningsnavn</label><input id="nameInput" maxlength="30" placeholder="F.eks. Thomas93" /><label for="openingInput">Favorittåpning</label><input id="openingInput" maxlength="50" placeholder="F.eks. Italiensk, London, Siciliansk..." /><label for="bioInput">Kort bio</label><textarea id="bioInput" maxlength="220" placeholder="Skriv litt om deg som sjakkspiller..."></textarea><button class="primary-btn full" id="saveProfileBtn" type="button">Lagre profil</button><div id="statusMsg" class="message"></div></section>
     </main>
-
   </div>
-
   <script type="module" src="./app.js"></script>
 </body>
 </html>
