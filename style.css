@@ -1674,3 +1674,394 @@ body.play-page .dark {
     radial-gradient(circle at 30% 24%, rgba(255,255,255,0.06), transparent 34%),
     linear-gradient(135deg, #97663d 0%, #6f4427 100%);
 }
+
+/* =========================================================
+   RYDDIGERE HOME + STØRRE KVADRATISK SJAKKBRETT
+   Lagt nederst med vilje, så dette overstyrer eldre regler.
+   ========================================================= */
+
+/* ---------- Home: ryddigere meny ---------- */
+body.home-page .home-app {
+  max-width: 1180px;
+}
+
+body.home-page .home-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+body.home-page .home-welcome,
+body.home-page .home-profile,
+body.home-page .home-menu-card,
+body.home-page .home-panel {
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(76, 49, 30, 0.96), rgba(30, 19, 12, 0.98));
+  border: 1px solid rgba(255, 225, 184, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 18px 40px rgba(0,0,0,0.32);
+}
+
+body.home-page .home-welcome,
+body.home-page .home-profile,
+body.home-page .home-menu-card,
+body.home-page .home-panel {
+  padding: 22px;
+}
+
+body.home-page .home-welcome h1 {
+  margin-top: 0;
+  font-size: clamp(30px, 4vw, 46px);
+}
+
+body.home-page .home-welcome p,
+body.home-page .home-menu-card p,
+body.home-page .home-panel p {
+  color: #d9c0a3;
+  line-height: 1.55;
+}
+
+body.home-page .compact-stats {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+body.home-page .home-menu-card {
+  margin-bottom: 18px;
+}
+
+body.home-page .home-menu-card h2 {
+  margin: 0 0 6px;
+  color: #fff0d9;
+}
+
+body.home-page .home-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+body.home-page .menu-button {
+  text-align: left;
+  width: 100%;
+  min-height: 150px;
+  font-family: inherit;
+}
+
+body.home-page .home-panels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+body.home-page .home-panel summary {
+  cursor: pointer;
+  color: #ffd59d;
+  font-weight: 800;
+  font-size: 18px;
+  list-style: none;
+}
+
+body.home-page .home-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+body.home-page .home-panel summary::after {
+  content: " +";
+  color: #e2b06d;
+}
+
+body.home-page .home-panel[open] summary::after {
+  content: " –";
+}
+
+body.home-page .chat-window {
+  height: 210px;
+}
+
+@media (max-width: 900px) {
+  body.home-page .home-dashboard,
+  body.home-page .home-menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Play: ryddigere lobby og større kvadratisk brett ---------- */
+body.play-page {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: 12px;
+}
+
+body.play-page .play-app {
+  height: calc(100dvh - 24px);
+  max-width: 1360px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+body.play-page .play-header {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+body.play-page .play-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 14px;
+  align-items: stretch;
+}
+
+body.play-page .play-board-card {
+  min-height: 0;
+  padding: 14px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+body.play-page .compact-game-info {
+  margin-bottom: 12px;
+}
+
+body.play-page .player-box {
+  padding: 10px 12px;
+}
+
+body.play-page .board-wrap-large {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.play-page #board {
+  width: min(calc(100dvh - 142px), calc(100vw - 430px), 780px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  max-height: 100%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  padding: 12px;
+  border-radius: 28px;
+}
+
+body.play-page .square {
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+body.play-page .piece {
+  width: 94%;
+  height: 94%;
+  transform: translateY(-1px) scale(1.04);
+}
+
+body.play-page .piece-svg {
+  width: 100%;
+  height: 100%;
+}
+
+body.play-page .play-lobby {
+  min-height: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+body.play-page .lobby-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+body.play-page .lobby-title > span {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 214, 160, 0.10);
+  border: 1px solid rgba(255, 216, 165, 0.14);
+  font-size: 24px;
+}
+
+body.play-page .lobby-title h2 {
+  margin: 0 0 3px;
+}
+
+body.play-page .lobby-title p {
+  margin: 0;
+  font-size: 13px;
+}
+
+body.play-page .lobby-section,
+body.play-page .lobby-room-box,
+body.play-page .moves-panel {
+  border-radius: 18px;
+  background: rgba(255, 247, 236, 0.055);
+  border: 1px solid rgba(255, 225, 184, 0.10);
+  padding: 12px;
+}
+
+body.play-page .room-actions {
+  display: grid;
+  gap: 10px;
+}
+
+body.play-page .join-row {
+  display: grid;
+  gap: 8px;
+}
+
+body.play-page .join-row label {
+  margin: 0;
+}
+
+body.play-page .join-row input {
+  margin: 0;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+body.play-page .lobby-room-box {
+  margin: 0;
+  text-align: center;
+}
+
+body.play-page .lobby-room-box span {
+  color: #cdb08d;
+  font-size: 13px;
+}
+
+body.play-page .room-code {
+  margin-top: 4px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+body.play-page #status {
+  margin: 0;
+  min-height: auto;
+  padding: 12px;
+}
+
+body.play-page .moves-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.play-page .moves-panel summary {
+  cursor: pointer;
+  color: #ffd59d;
+  font-weight: 800;
+  list-style: none;
+}
+
+body.play-page .moves-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+body.play-page .moves {
+  max-height: 145px;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  body.play-page {
+    overflow: hidden;
+    padding: 8px;
+  }
+
+  body.play-page .play-app {
+    height: calc(100dvh - 16px);
+  }
+
+  body.play-page .play-header {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  body.play-page .play-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  body.play-page .play-lobby {
+    order: -1;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  body.play-page .lobby-title p,
+  body.play-page .moves-panel {
+    display: none;
+  }
+
+  body.play-page .room-actions {
+    grid-template-columns: 1fr;
+  }
+
+  body.play-page #board {
+    width: min(96vw, calc(100dvh - 292px));
+    padding: 9px;
+    border-radius: 24px;
+  }
+
+  body.play-page .piece {
+    width: 95%;
+    height: 95%;
+  }
+}
+
+@media (max-width: 560px) {
+  body.play-page .compact-game-info {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  body.play-page .player-box strong {
+    font-size: 13px;
+  }
+
+  body.play-page .lobby-title > span {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  body.play-page .lobby-title h2 {
+    font-size: 20px;
+  }
+
+  body.play-page .room-code {
+    font-size: 26px;
+  }
+
+  body.play-page #board {
+    width: min(97vw, calc(100dvh - 304px));
+    padding: 7px;
+    border-radius: 22px;
+  }
+
+  body.play-page .coord {
+    display: none;
+  }
+}

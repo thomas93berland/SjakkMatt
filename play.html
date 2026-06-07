@@ -6,7 +6,6 @@
 
   <title>Chess Loungen | Spill</title>
 
-  
   <style>
     html { background:#120b07; }
     body { margin:0; background:#120b07; color:#f7efe4; font-family:Arial,sans-serif; }
@@ -16,9 +15,9 @@
 
 <body class="play-page" data-page="play">
 
-  <div class="app">
+  <div class="app play-app">
 
-    <header>
+    <header class="play-header">
       <div class="logo">♟ <span>Chess</span> Loungen</div>
 
       <div class="top-buttons">
@@ -27,11 +26,11 @@
       </div>
     </header>
 
-    <div class="layout">
+    <div class="layout play-layout">
 
-      <main class="board-card">
+      <main class="board-card play-board-card">
 
-        <div class="game-info">
+        <div class="game-info compact-game-info">
           <div class="player-box">
             <span>Hvit</span>
             <strong id="whitePlayer">Venter...</strong>
@@ -43,38 +42,45 @@
           </div>
         </div>
 
-        <div class="board-wrap">
+        <div class="board-wrap board-wrap-large">
           <div id="board"></div>
         </div>
 
       </main>
 
-      <aside class="side-card">
-        <h2>Online kamp</h2>
+      <aside class="side-card play-lobby">
+        <div class="lobby-title">
+          <span>♟</span>
+          <div>
+            <h2>Spillrom</h2>
+            <p>Lag et rom, bli med med kode eller vent på en venn.</p>
+          </div>
+        </div>
 
-        <p>
-          Lag et rom og del romkoden med en venn.
-          Når vennen din blir med, trekkes hvit og svart tilfeldig.
-        </p>
+        <div class="lobby-section room-actions">
+          <button type="button" class="main-btn" id="createRoomBtn">Lag nytt rom</button>
 
-        <button type="button" class="main-btn" id="createRoomBtn">Lag nytt rom</button>
+          <div class="join-row">
+            <label for="joinCode">Romkode</label>
+            <input id="joinCode" placeholder="F.eks. A7K9Q" maxlength="5" autocomplete="off" />
+            <button type="button" class="secondary-btn" id="joinRoomBtn">Bli med</button>
+          </div>
+        </div>
 
-        <label for="joinCode">Bli med i rom</label>
-        <input id="joinCode" placeholder="Skriv romkode" maxlength="5" autocomplete="off" />
-
-        <button type="button" class="secondary-btn" id="joinRoomBtn">Bli med</button>
-
-        <div class="room-box">
-          <div>Romkode:</div>
+        <div class="room-box lobby-room-box">
+          <span>Din romkode</span>
           <div class="room-code" id="roomCode">------</div>
         </div>
 
         <div id="status">Laster sjakk...</div>
 
-        <div class="moves" id="moves">
-          <strong>Trekk:</strong><br>
-          Ingen trekk enda.
-        </div>
+        <details class="moves-panel" open>
+          <summary>Trekk</summary>
+          <div class="moves" id="moves">
+            <strong>Trekk:</strong><br>
+            Ingen trekk enda.
+          </div>
+        </details>
       </aside>
 
     </div>
