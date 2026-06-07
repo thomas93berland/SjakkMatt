@@ -80,3 +80,44 @@
 .piece-img {
   display: none !important;
 }
+
+
+/* =====================================================
+   15 MIN TIMER
+   ===================================================== */
+
+.player-clock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(236, 190, 123, 0.18);
+  color: #ffe1a3;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.player-pill.clock-running {
+  border-color: rgba(255, 214, 147, 0.62);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.24),
+    inset 0 0 0 1px rgba(255, 214, 147, 0.16);
+}
+
+.player-pill.clock-low .player-clock {
+  color: #ffb3a3;
+  border-color: rgba(255, 130, 100, 0.45);
+}
+
+@media (max-width: 620px) {
+  .player-clock {
+    font-size: 14px;
+    padding: 4px 8px;
+    margin-top: 6px;
+  }
+}
