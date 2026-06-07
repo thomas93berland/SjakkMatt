@@ -1,32 +1,82 @@
-/* 2D-brikker uten mappe. Brettet beholdes stort, brikkene gjøres mye mindre. */
+/* =====================================================
+   INLINE SVG CHESS PIECES FIX
+   Ingen bilde-filer. Ingen pieces-mappe. Ingen ødelagte ikoner.
+   ===================================================== */
 
 .piece {
-  width: 100% !important;
-  height: 100% !important;
-  display: grid !important;
-  place-items: center !important;
-  pointer-events: none !important;
-  user-select: none !important;
-  transform: none !important;
-  font-size: 0 !important;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  user-select: none;
 }
 
-.piece-img {
-  width: 46% !important;
-  height: 46% !important;
-  max-width: 46% !important;
-  max-height: 46% !important;
-  object-fit: contain !important;
-  display: block !important;
-  pointer-events: none !important;
-  user-select: none !important;
+.piece-svg {
+  width: 46%;
+  height: 46%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.32));
+}
+
+.piece.white-piece .piece-fill {
+  fill: #f7f4ec;
+  stroke: #b8aea1;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.piece.white-piece .piece-line,
+.piece.white-piece .piece-detail {
+  fill: none;
+  stroke: #8f857b;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.piece.white-piece .piece-dot {
+  fill: #8f857b;
+}
+
+.piece.black-piece .piece-fill {
+  fill: #181818;
+  stroke: #3d3d3d;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.piece.black-piece .piece-line,
+.piece.black-piece .piece-detail {
+  fill: none;
+  stroke: #6a6a6a;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.piece.black-piece .piece-dot {
+  fill: #6a6a6a;
+}
+
+.piece-shadow {
+  fill: rgba(0, 0, 0, 0.22);
+  stroke: none;
 }
 
 @media (max-width: 620px) {
-  .piece-img {
-    width: 44% !important;
-    height: 44% !important;
-    max-width: 44% !important;
-    max-height: 44% !important;
+  .piece-svg {
+    width: 44%;
+    height: 44%;
   }
+}
+
+/* Sørger for at gammelt img-oppsett ikke ødelegger noe */
+.piece-img {
+  display: none !important;
 }

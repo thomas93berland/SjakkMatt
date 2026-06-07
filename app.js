@@ -36,11 +36,11 @@ const firebaseConfig = {
   appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
 };
 
+const NORMAL_START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
-
-const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const page = document.body.dataset.page || "";
 
@@ -185,7 +185,7 @@ function randomColors(uidA, uidB) {
 }
 
 /* =====================================================
-   LOGIN / REGISTER
+   AUTH
    ===================================================== */
 
 if (page === "auth" || page === "login") {
@@ -500,7 +500,7 @@ async function sendInvite(user, player) {
       blackUid: colors.blackUid,
       whiteName,
       blackName,
-      fen: START_FEN,
+      fen: NORMAL_START_FEN,
       moves: [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -519,12 +519,7 @@ async function sendInvite(user, player) {
 
     setStatus("Invitasjon sendt til " + opponentName + ".");
   } catch (error) {
-    const text = friendlyError(error);
-    if ((error?.code || "").includes("permission")) {
-      setStatus("Kunne ikke sende invitasjon: Firebase-reglene må oppdateres. Bruk firebase-rules.json i pakken.");
-    } else {
-      setStatus("Kunne ikke sende invitasjon: " + text);
-    }
+    setStatus("Kunne ikke sende invitasjon: " + friendlyError(error));
   }
 }
 
@@ -727,7 +722,7 @@ function initProfilePage(user) {
 }
 
 /* =====================================================
-   PLAY
+   PLAY - INLINE SVG PIECES
    ===================================================== */
 
 if (page === "play") {
@@ -735,6 +730,66 @@ if (page === "play") {
     bindLogout();
     initPlayPage(user);
   });
+}
+
+function pieceBase() {
+  return `
+    <ellipse class="piece-shadow" cx="50" cy="88" rx="31" ry="6"></ellipse>
+    <path class="piece-fill" d="M25 82 C31 75 69 75 75 82 L72 91 L28 91 Z"></path>
+    <path class="piece-line" d="M32 82 H68"></path>
+  `;
+}
+
+function pieceSvg(type) {
+  const base = pieceBase();
+
+  const bodies = {
+    p: `
+      <circle class="piece-fill" cx="50" cy="28" r="13"></circle>
+      <path class="piece-fill" d="M42 43 H58 C58 53 63 61 66 74 H34 C37 61 42 53 42 43 Z"></path>
+      <path class="piece-line" d="M39 73 H61"></path>
+      ${base}
+    `,
+    r: `
+      <path class="piece-fill" d="M31 18 H41 V28 H47 V18 H53 V28 H59 V18 H69 V39 H31 Z"></path>
+      <path class="piece-fill" d="M38 39 H62 L66 75 H34 Z"></path>
+      <path class="piece-line" d="M34 39 H66"></path>
+      <path class="piece-line" d="M38 70 H62"></path>
+      ${base}
+    `,
+    n: `
+      <path class="piece-fill" d="M34 75 C36 62 39 52 45 44 C37 36 39 25 47 16 C54 25 65 29 69 40 C74 52 65 63 56 68 L65 75 Z"></path>
+      <path class="piece-detail" d="M50 34 C57 36 61 40 63 45"></path>
+      <circle class="piece-dot" cx="55" cy="36" r="2.4"></circle>
+      <path class="piece-line" d="M42 63 C49 68 56 70 63 70"></path>
+      ${base}
+    `,
+    b: `
+      <path class="piece-fill" d="M50 13 C66 27 69 43 57 55 C64 61 66 68 66 75 H34 C34 68 36 61 43 55 C31 43 34 27 50 13 Z"></path>
+      <path class="piece-detail" d="M56 27 L43 48"></path>
+      <circle class="piece-dot" cx="50" cy="20" r="2.8"></circle>
+      ${base}
+    `,
+    q: `
+      <circle class="piece-fill" cx="29" cy="24" r="6"></circle>
+      <circle class="piece-fill" cx="50" cy="15" r="7"></circle>
+      <circle class="piece-fill" cx="71" cy="24" r="6"></circle>
+      <path class="piece-fill" d="M25 34 L38 40 L50 24 L62 40 L75 34 L67 58 H33 Z"></path>
+      <path class="piece-fill" d="M39 58 H61 C65 64 66 69 66 75 H34 C34 69 35 64 39 58 Z"></path>
+      <path class="piece-line" d="M34 58 H66"></path>
+      ${base}
+    `,
+    k: `
+      <path class="piece-detail" d="M50 9 V28"></path>
+      <path class="piece-detail" d="M41 18 H59"></path>
+      <path class="piece-fill" d="M39 31 C39 22 61 22 61 31 C61 39 56 43 50 46 C44 43 39 39 39 31 Z"></path>
+      <path class="piece-fill" d="M36 47 H64 C70 55 68 66 63 75 H37 C32 66 30 55 36 47 Z"></path>
+      <path class="piece-line" d="M37 61 H63"></path>
+      ${base}
+    `
+  };
+
+  return `<svg class="piece-svg" viewBox="0 0 100 100" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">${bodies[type] || ""}</svg>`;
 }
 
 function initPlayPage(user) {
@@ -753,21 +808,6 @@ function initPlayPage(user) {
   let myColor = null;
   let lastFen = "";
   let unsubscribeGame = null;
-
-  const pieceImages = {
-    wp: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wp%22%3E%20%3Cg%3E%20%3Ccircle%20cx=%2250%22%20cy=%2227%22%20r=%2213%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22/%3E%20%3Cpath%20d=%22M40%2043%20H60%20C60%2053%2065%2062%2068%2076%20H32%20C35%2062%2040%2053%2040%2043%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2073%20H62%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    wr: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wr%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M27%2017%20H39%20V27%20H45%20V17%20H55%20V27%20H61%20V17%20H73%20V40%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M36%2040%20H64%20L69%2077%20H31%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M33%2042%20H67%20M38%2070%20H62%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    wn: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wn%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M30%2078%20C33%2062%2038%2050%2047%2042%20C39%2034%2040%2022%2049%2012%20C56%2022%2069%2027%2073%2042%20C77%2055%2067%2066%2057%2070%20L68%2078%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M47%2041%20C54%2041%2061%2046%2064%2052%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Ccircle%20cx=%2257%22%20cy=%2236%22%20r=%222.7%22%20fill=%22%232a1b12%22%20opacity=%220.9%22/%3E%20%3Cpath%20d=%22M43%2065%20C50%2070%2058%2072%2065%2072%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    wb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wb%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M50%2010%20C67%2025%2072%2043%2058%2057%20C65%2063%2068%2070%2068%2078%20H32%20C32%2070%2035%2063%2042%2057%20C28%2043%2033%2025%2050%2010%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M58%2026%20L42%2051%22%20stroke=%22%239d7b55%22%20stroke-width=%224%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Ccircle%20cx=%2250%22%20cy=%2219%22%20r=%223.4%22%20fill=%22%239d7b55%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    wq: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wq%22%3E%20%3Cg%3E%20%3Ccircle%20cx=%2227%22%20cy=%2224%22%20r=%226.5%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%223%22/%3E%20%3Ccircle%20cx=%2250%22%20cy=%2213%22%20r=%227%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%223%22/%3E%20%3Ccircle%20cx=%2273%22%20cy=%2224%22%20r=%226.5%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%223%22/%3E%20%3Cpath%20d=%22M22%2034%20L37%2042%20L50%2024%20L63%2042%20L78%2034%20L68%2060%20H32%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2060%20H62%20C67%2066%2069%2072%2069%2079%20H31%20C31%2072%2033%2066%2038%2060%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M33%2060%20H67%20M38%2073%20H62%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    wk: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22wk%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M50%208%20V28%20M40%2018%20H60%22%20stroke=%22%232a1b12%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%20%3Cpath%20d=%22M39%2031%20C39%2022%2061%2022%2061%2031%20C61%2040%2055%2043%2055%2050%20C65%2056%2069%2068%2069%2079%20H31%20C31%2068%2035%2056%2045%2050%20C45%2043%2039%2040%2039%2031%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2058%20H62%20M36%2073%20H64%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23f7f1e7%22%20stroke=%22%232a1b12%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%239d7b55%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.85%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    bp: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22bp%22%3E%20%3Cg%3E%20%3Ccircle%20cx=%2250%22%20cy=%2227%22%20r=%2213%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22/%3E%20%3Cpath%20d=%22M40%2043%20H60%20C60%2053%2065%2062%2068%2076%20H32%20C35%2062%2040%2053%2040%2043%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2073%20H62%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    br: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22br%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M27%2017%20H39%20V27%20H45%20V17%20H55%20V27%20H61%20V17%20H73%20V40%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M36%2040%20H64%20L69%2077%20H31%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M33%2042%20H67%20M38%2070%20H62%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    bn: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22bn%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M30%2078%20C33%2062%2038%2050%2047%2042%20C39%2034%2040%2022%2049%2012%20C56%2022%2069%2027%2073%2042%20C77%2055%2067%2066%2057%2070%20L68%2078%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M47%2041%20C54%2041%2061%2046%2064%2052%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Ccircle%20cx=%2257%22%20cy=%2236%22%20r=%222.7%22%20fill=%22%23f0d1a0%22%20opacity=%220.9%22/%3E%20%3Cpath%20d=%22M43%2065%20C50%2070%2058%2072%2065%2072%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    bb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22bb%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M50%2010%20C67%2025%2072%2043%2058%2057%20C65%2063%2068%2070%2068%2078%20H32%20C32%2070%2035%2063%2042%2057%20C28%2043%2033%2025%2050%2010%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M58%2026%20L42%2051%22%20stroke=%22%235c4635%22%20stroke-width=%224%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Ccircle%20cx=%2250%22%20cy=%2219%22%20r=%223.4%22%20fill=%22%235c4635%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    bq: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22bq%22%3E%20%3Cg%3E%20%3Ccircle%20cx=%2227%22%20cy=%2224%22%20r=%226.5%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%223%22/%3E%20%3Ccircle%20cx=%2250%22%20cy=%2213%22%20r=%227%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%223%22/%3E%20%3Ccircle%20cx=%2273%22%20cy=%2224%22%20r=%226.5%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%223%22/%3E%20%3Cpath%20d=%22M22%2034%20L37%2042%20L50%2024%20L63%2042%20L78%2034%20L68%2060%20H32%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2060%20H62%20C67%2066%2069%2072%2069%2079%20H31%20C31%2072%2033%2066%2038%2060%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M33%2060%20H67%20M38%2073%20H62%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E",
-    bk: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%20role=%22img%22%20aria-label=%22bk%22%3E%20%3Cg%3E%20%3Cpath%20d=%22M50%208%20V28%20M40%2018%20H60%22%20stroke=%22%23f0d1a0%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%20%3Cpath%20d=%22M39%2031%20C39%2022%2061%2022%2061%2031%20C61%2040%2055%2043%2055%2050%20C65%2056%2069%2068%2069%2079%20H31%20C31%2068%2035%2056%2045%2050%20C45%2043%2039%2040%2039%2031%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M38%2058%20H62%20M36%2073%20H64%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3Cellipse%20cx=%2250%22%20cy=%2292%22%20rx=%2231%22%20ry=%225.5%22%20fill=%22rgba(0,0,0,0.22)%22/%3E%20%3Cpath%20d=%22M23%2083%20C29%2076%2071%2076%2077%2083%20L73%2093%20H27%20Z%22%20fill=%22%23111111%22%20stroke=%22%23f0d1a0%22%20stroke-width=%224%22%20stroke-linejoin=%22round%22/%3E%20%3Cpath%20d=%22M31%2082%20H69%22%20stroke=%22%235c4635%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20opacity=%220.65%22/%3E%20%3C/g%3E%20%3C/svg%3E"
-  };
 
   $("homeBtn")?.addEventListener("click", () => go("./home.html"));
 
@@ -823,14 +863,7 @@ function initPlayPage(user) {
       if (piece) {
         const pieceEl = document.createElement("div");
         pieceEl.className = "piece " + (piece.color === "w" ? "white-piece" : "black-piece");
-
-        const img = document.createElement("img");
-        img.className = "piece-img";
-        img.src = pieceImages[piece.color + piece.type];
-        img.alt = piece.color + piece.type;
-        img.draggable = false;
-
-        pieceEl.appendChild(img);
+        pieceEl.innerHTML = pieceSvg(piece.type);
         square.appendChild(pieceEl);
       }
 
@@ -1018,7 +1051,7 @@ function initPlayPage(user) {
       else if (game.blackUid === user.uid) myColor = "black";
       else myColor = null;
 
-      const fen = game.fen && game.fen !== "start" ? game.fen : new ChessCtor().fen();
+      const fen = game.fen && game.fen !== "start" ? game.fen : NORMAL_START_FEN;
 
       if (fen !== lastFen) {
         chess.load(fen);
@@ -1036,7 +1069,6 @@ function initPlayPage(user) {
   async function createRoom() {
     try {
       const roomCode = await makeUniqueRoomCode();
-      const fen = new ChessCtor().fen();
 
       await set(ref(db, "games/" + roomCode), {
         roomCode,
@@ -1048,7 +1080,7 @@ function initPlayPage(user) {
         blackUid: "",
         whiteName: "",
         blackName: "",
-        fen,
+        fen: NORMAL_START_FEN,
         moves: [],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
