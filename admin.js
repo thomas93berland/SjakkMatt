@@ -8,6 +8,7 @@ const $=id=>document.getElementById(id);
 let me=null,users={},games={},chat={},admins={},search="";
 
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function err(e){return e?.code || e?.message || String(e || "Ukjent feil")}
 function show(id){["loading","noAccess","adminApp"].forEach(x=>$(x)?.classList.add("hidden"));$(id)?.classList.remove("hidden")}
 function status(t){$("statusMsg").textContent=t}
 function isAdmin(uid){return admins?.[uid]===true || users?.[uid]?.role==="admin" || users?.[uid]?.admin===true}
@@ -27,16 +28,32 @@ document.querySelectorAll("[data-panel]").forEach(btn=>{
 });
 
 async function checkAdmin(user){
-  const [a,u]=await Promise.all([get(ref(db,"admins/"+user.uid)),get(ref(db,"users/"+user.uid))]);
-  const profile=u.val()||{};
-  return a.val()===true || profile.role==="admin" || profile.admin===true;
+  let adminValue = false;
+  let profile = {};
+
+  try {
+    const adminSnap = await get(ref(db, "admins/" + user.uid));
+    adminValue = adminSnap.val() === true;
+  } catch (e) {
+    // Dette skjer ofte første gang hvis Firebase-reglene ikke tillater admin-lesing enda.
+    adminValue = false;
+  }
+
+  try {
+    const profileSnap = await get(ref(db, "users/" + user.uid));
+    profile = profileSnap.val() || {};
+  } catch (e) {
+    profile = {};
+  }
+
+  return adminValue || profile.role === "admin" || profile.admin === true;
 }
 
 function listen(){
-  onValue(ref(db,"admins"),s=>{admins=s.val()||{};renderAdmins();renderUsers()},e=>status("Kan ikke lese admins: "+e.code));
-  onValue(ref(db,"users"),s=>{users=s.val()||{};renderUsers();renderAdmins();overview()},e=>status("Kan ikke lese brukere: "+e.code));
-  onValue(ref(db,"games"),s=>{games=s.val()||{};renderGames();overview()},e=>status("Kan ikke lese partier: "+e.code));
-  onValue(query(ref(db,"loungeChat"),limitToLast(75)),s=>{chat=s.val()||{};renderChat();overview()},e=>status("Kan ikke lese chat: "+e.code));
+  onValue(ref(db,"admins"),s=>{admins=s.val()||{};renderAdmins();renderUsers()},e=>status("Kan ikke lese admins: "+err(e)));
+  onValue(ref(db,"users"),s=>{users=s.val()||{};renderUsers();renderAdmins();overview()},e=>status("Kan ikke lese brukere: "+err(e)));
+  onValue(ref(db,"games"),s=>{games=s.val()||{};renderGames();overview()},e=>status("Kan ikke lese partier: "+err(e)));
+  onValue(query(ref(db,"loungeChat"),limitToLast(75)),s=>{chat=s.val()||{};renderChat();overview()},e=>status("Kan ikke lese chat: "+err(e)));
 }
 
 function overview(){
@@ -90,7 +107,7 @@ async function userAction(act,uid){
     if(act==="ban"){await update(ref(db,"users/"+uid),{banned:true});return status("Bruker utestengt.")}
     if(act==="unban"){await update(ref(db,"users/"+uid),{banned:false});return status("Utestenging fjernet.")}
     if(act==="reset"){await update(ref(db,"users/"+uid),{elo:800,wins:0,losses:0,draws:0});return status("Stats nullstilt.")}
-  }catch(e){status("Feil: "+e.code)}
+  }catch(e){status("Feil: "+err(e))}
 }
 
 function renderGames(){
@@ -110,7 +127,7 @@ async function gameAction(act,room){
   try{
     if(act==="finish"){await update(ref(db,"games/"+room),{status:"finished",result:"Avsluttet av admin.",lastClockTs:null,updatedAt:serverTimestamp()});return status("Parti avsluttet.")}
     if(act==="delete"&&confirm("Slette dette partiet/rommet?")){await remove(ref(db,"games/"+room));return status("Parti slettet.")}
-  }catch(e){status("Feil: "+e.code)}
+  }catch(e){status("Feil: "+err(e))}
 }
 
 function renderChat(){
@@ -118,7 +135,7 @@ function renderChat(){
   const rows=Object.entries(chat||{}).reverse();
   if(!rows.length){list.innerHTML='<div class="row"><span>Ingen meldinger.</span></div>';return}
   list.innerHTML=rows.map(([id,m])=>`<div class="row"><div><strong>${esc(m?.name||name(m?.uid)||"Sjakkspiller")}</strong><span>${esc(m?.text||"")}</span><div class="muted">ID: ${esc(id)}</div></div><button class="danger" data-delchat="${esc(id)}">Slett</button></div>`).join("");
-  list.querySelectorAll("[data-delchat]").forEach(b=>b.onclick=async()=>{try{await remove(ref(db,"loungeChat/"+b.dataset.delchat));status("Melding slettet.")}catch(e){status("Feil: "+e.code)}})
+  list.querySelectorAll("[data-delchat]").forEach(b=>b.onclick=async()=>{try{await remove(ref(db,"loungeChat/"+b.dataset.delchat));status("Melding slettet.")}catch(e){status("Feil: "+err(e))}})
 }
 
 function renderAdmins(){
@@ -136,5 +153,9 @@ onAuthStateChanged(auth,async user=>{
   try{
     if(!(await checkAdmin(user))){show("noAccess");return}
     show("adminApp");listen();
-  }catch(e){show("noAccess");$("setupText").textContent="Kunne ikke sjekke admin: "+e.code}
+  }catch(e){
+    show("noAccess");
+    $("setupText").textContent =
+      `Sjekken ble stoppet av Firebase-reglene. Legg inn:\nadmins/${user.uid} = true\n\nFeil: ${err(e)}`;
+  }
 });
