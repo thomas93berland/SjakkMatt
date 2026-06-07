@@ -1,0 +1,32 @@
+/* 2D-brikker uten mappe. Brettet beholdes stort, brikkene gjøres mye mindre. */
+
+.piece {
+  width: 100% !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  transform: none !important;
+  font-size: 0 !important;
+}
+
+.piece-img {
+  width: 46% !important;
+  height: 46% !important;
+  max-width: 46% !important;
+  max-height: 46% !important;
+  object-fit: contain !important;
+  display: block !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+@media (max-width: 620px) {
+  .piece-img {
+    width: 44% !important;
+    height: 44% !important;
+    max-width: 44% !important;
+    max-height: 44% !important;
+  }
+}
