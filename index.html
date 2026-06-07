@@ -6,7 +6,7 @@
   <title>The Chess Lounge | Logg inn</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-<body class="login-page" data-page="auth">
+<body class="login-page" data-page="login">
   <main class="login-shell">
     <section class="login-hero">
       <div class="brand-mark">♔</div>
@@ -22,7 +22,7 @@
         <button type="button" id="loginModeBtn" class="active">Logg inn</button>
         <button type="button" id="registerModeBtn">Registrer</button>
       </div>
-      <form id="authForm" onsubmit="return false;">
+      <form id="authForm">
         <div class="field" id="nameField" hidden>
           <label for="displayName">Visningsnavn</label>
           <input id="displayName" type="text" maxlength="30" placeholder="F.eks. Thomas93" autocomplete="nickname" />
@@ -42,13 +42,7 @@
           <label class="remember"><input id="rememberMe" type="checkbox" checked /> Husk meg</label>
           <button type="button" id="forgotBtn">Glemt passord?</button>
         </div>
-
-        <!-- Two action buttons: login and register. app.js expects ids loginBtn and registerBtn -->
-        <div style="display:grid;gap:10px;">
-          <button class="primary-btn full" type="button" id="loginBtn">Logg inn</button>
-          <button class="ghost-btn full" type="button" id="registerBtn">Registrer</button>
-        </div>
-
+        <button class="primary-btn full" type="submit" id="submitBtn">Logg inn</button>
         <p class="switch-line"><span id="switchText">Har du ikke bruker?</span> <button type="button" id="switchModeBtn">Registrer deg</button></p>
         <div id="msg" class="message"></div>
       </form>
