@@ -40,6 +40,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 const page = document.body.dataset.page || "";
 
 function $(id) {
@@ -477,11 +479,6 @@ function listenPlayers(user) {
 
 async function sendInvite(user, player) {
   try {
-    if (!window.Chess) {
-      setStatus("Chess.js er ikke lastet enda. Prøv spill-siden først eller oppdater siden.");
-      return;
-    }
-
     const roomCode = await makeUniqueRoomCode();
     const colors = randomColors(user.uid, player.uid);
 
@@ -492,7 +489,6 @@ async function sendInvite(user, player) {
     const blackName = colors.blackUid === user.uid ? myName : opponentName;
 
     const inviteRef = push(ref(db, "userInvites/" + player.uid));
-    const chess = new window.Chess();
 
     await set(ref(db, "games/" + roomCode), {
       roomCode,
@@ -504,7 +500,7 @@ async function sendInvite(user, player) {
       blackUid: colors.blackUid,
       whiteName,
       blackName,
-      fen: chess.fen(),
+      fen: START_FEN,
       moves: [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -523,7 +519,12 @@ async function sendInvite(user, player) {
 
     setStatus("Invitasjon sendt til " + opponentName + ".");
   } catch (error) {
-    setStatus("Kunne ikke sende invitasjon: " + friendlyError(error));
+    const text = friendlyError(error);
+    if ((error?.code || "").includes("permission")) {
+      setStatus("Kunne ikke sende invitasjon: Firebase-reglene må oppdateres. Bruk firebase-rules.json i pakken.");
+    } else {
+      setStatus("Kunne ikke sende invitasjon: " + text);
+    }
   }
 }
 
@@ -753,19 +754,19 @@ function initPlayPage(user) {
   let lastFen = "";
   let unsubscribeGame = null;
 
-  const pieceSymbols = {
-    wp: "♙",
-    wr: "♖",
-    wn: "♘",
-    wb: "♗",
-    wq: "♕",
-    wk: "♔",
-    bp: "♟",
-    br: "♜",
-    bn: "♞",
-    bb: "♝",
-    bq: "♛",
-    bk: "♚"
+  const pieceImages = {
+    wp: "./pieces/wp.svg",
+    wr: "./pieces/wr.svg",
+    wn: "./pieces/wn.svg",
+    wb: "./pieces/wb.svg",
+    wq: "./pieces/wq.svg",
+    wk: "./pieces/wk.svg",
+    bp: "./pieces/bp.svg",
+    br: "./pieces/br.svg",
+    bn: "./pieces/bn.svg",
+    bb: "./pieces/bb.svg",
+    bq: "./pieces/bq.svg",
+    bk: "./pieces/bk.svg"
   };
 
   $("homeBtn")?.addEventListener("click", () => go("./home.html"));
@@ -822,7 +823,14 @@ function initPlayPage(user) {
       if (piece) {
         const pieceEl = document.createElement("div");
         pieceEl.className = "piece " + (piece.color === "w" ? "white-piece" : "black-piece");
-        pieceEl.textContent = pieceSymbols[piece.color + piece.type];
+
+        const img = document.createElement("img");
+        img.className = "piece-img";
+        img.src = pieceImages[piece.color + piece.type];
+        img.alt = piece.color + piece.type;
+        img.draggable = false;
+
+        pieceEl.appendChild(img);
         square.appendChild(pieceEl);
       }
 

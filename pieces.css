@@ -1,0 +1,38 @@
+/* 2D SVG-BRIKKER - MYE MINDRE, BRETTET ER LIKE STORT */
+body.play-page .piece {
+  width: 100% !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+  pointer-events: none;
+  user-select: none;
+  transform: none !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body.play-page .piece-img {
+  width: 52% !important;
+  height: 52% !important;
+  object-fit: contain !important;
+  display: block !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+body.play-page .white-piece .piece-img {
+  filter: drop-shadow(0 1px 1px rgba(65, 38, 18, 0.40)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.14));
+}
+
+body.play-page .black-piece .piece-img {
+  filter: drop-shadow(0 1px 1px rgba(255, 225, 170, 0.16)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.24));
+}
+
+@media (max-width: 620px) {
+  body.play-page .piece-img {
+    width: 50% !important;
+    height: 50% !important;
+  }
+}
