@@ -13,8 +13,8 @@
 }
 
 .piece-svg {
-  width: 76%;
-  height: 76%;
+  width: 92%;
+  height: 92%;
   display: block;
   overflow: visible;
   pointer-events: none;
@@ -71,8 +71,8 @@
 
 @media (max-width: 620px) {
   .piece-svg {
-    width: 74%;
-    height: 74%;
+    width: 88%;
+    height: 88%;
   }
 }
 
