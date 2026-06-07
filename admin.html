@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Chess Lounge | Admin</title>
+  <link rel="stylesheet" href="./admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">♔ <span>The Chess Lounge Admin</span></div>
+    <nav>
+      <button id="homeBtn">Hjem</button>
+      <button id="playBtn">Spill</button>
+      <button id="logoutBtn">Logg ut</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="loading" class="card">
+      <h1>Laster adminpanel...</h1>
+      <p>Sjekker om brukeren din har admin-tilgang.</p>
+    </section>
+
+    <section id="noAccess" class="card hidden">
+      <h1>Ingen admin-tilgang</h1>
+      <p>Du må legge inn din UID som admin i Firebase.</p>
+      <label>Din UID</label>
+      <code id="myUid">Laster...</code>
+      <pre id="setupText"></pre>
+      <button class="primary" id="copyUidBtn">Kopier UID</button>
+    </section>
+
+    <section id="adminApp" class="hidden">
+      <aside class="menu">
+        <button class="active" data-panel="overview">📊 Oversikt</button>
+        <button data-panel="users">👥 Brukere</button>
+        <button data-panel="games">♟ Partier</button>
+        <button data-panel="chat">💬 Chat</button>
+        <button data-panel="admins">🔐 Admins</button>
+      </aside>
+
+      <section class="content">
+        <section id="overview" class="panel active">
+          <h1>Oversikt</h1>
+          <div class="stats">
+            <div class="stat"><span>Brukere</span><strong id="usersCount">0</strong></div>
+            <div class="stat"><span>Partier</span><strong id="gamesCount">0</strong></div>
+            <div class="stat"><span>Aktive</span><strong id="activeGamesCount">0</strong></div>
+            <div class="stat"><span>Chat</span><strong id="chatCount">0</strong></div>
+          </div>
+          <p id="statusMsg" class="status">Klar.</p>
+        </section>
+
+        <section id="users" class="panel">
+          <h1>Brukere</h1>
+          <input id="searchUsers" placeholder="Søk etter navn, e-post eller UID" />
+          <div class="tableWrap">
+            <table>
+              <thead><tr><th>Spiller</th><th>Elo</th><th>Stats</th><th>Rolle</th><th>Handling</th></tr></thead>
+              <tbody id="usersTable"><tr><td colspan="5">Laster...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="games" class="panel">
+          <h1>Partier</h1>
+          <div class="tableWrap">
+            <table>
+              <thead><tr><th>Rom</th><th>Status</th><th>Hvit</th><th>Svart</th><th>Handling</th></tr></thead>
+              <tbody id="gamesTable"><tr><td colspan="5">Laster...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="chat" class="panel">
+          <h1>Chat</h1>
+          <div id="chatList" class="list">Laster...</div>
+        </section>
+
+        <section id="admins" class="panel">
+          <h1>Admins</h1>
+          <p>Første admin må legges inn manuelt i Firebase.</p>
+          <pre>admins/DIN_UID = true</pre>
+          <div id="adminsList" class="list">Laster...</div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>

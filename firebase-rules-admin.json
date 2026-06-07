@@ -1,0 +1,34 @@
+{
+  "rules": {
+    "admins": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$uid": {
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
+      }
+    },
+    "games": {
+      ".read": "auth != null",
+      "$gameId": {
+        ".write": "auth != null && (!root.child('users').child(auth.uid).child('banned').val() || root.child('admins').child(auth.uid).val() === true)"
+      }
+    },
+    "loungeChat": {
+      ".read": "auth != null",
+      "$messageId": {
+        ".write": "auth != null && (!root.child('users').child(auth.uid).child('banned').val() || root.child('admins').child(auth.uid).val() === true)"
+      }
+    },
+    "userInvites": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && (!root.child('users').child(auth.uid).child('banned').val() || root.child('admins').child(auth.uid).val() === true)"
+      }
+    }
+  }
+}
