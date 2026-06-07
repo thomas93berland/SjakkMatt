@@ -3,23 +3,56 @@
     "users": {
       "$uid": {
         ".read": "auth != null",
-        ".write": "auth != null && auth.uid === $uid"
+        ".write": "auth != null && auth.uid === $uid",
+        "uid": { ".validate": "newData.isString() && newData.val() === $uid" },
+        "name": { ".validate": "newData.isString() && newData.val().length <= 30" },
+        "email": { ".validate": "newData.isString() && newData.val().length <= 254" },
+        "elo": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000" },
+        "wins": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "losses": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "draws": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "bio": { ".validate": "newData.isString() && newData.val().length <= 220" },
+        "favoriteOpening": { ".validate": "newData.isString() && newData.val().length <= 50" },
+        "createdAt": { ".validate": "newData.exists()" },
+        "lastSeen": { ".validate": "newData.exists()" }
       }
     },
+
     "games": {
       "$gameId": {
         ".read": "auth != null",
-        ".write": "auth != null"
+        ".write": "auth != null && ( (data.exists() && (data.child('whiteUid').val() === auth.uid || data.child('blackUid').val() === auth.uid || data.child('creatorUid').val() === auth.uid)) || (!data.exists() && newData.child('creatorUid').val() === auth.uid) )",
+        "code": { ".validate": "newData.isString() && newData.val().length <= 10" },
+        "status": { ".validate": "newData.isString() && (newData.val() === 'waiting' || newData.val() === 'playing' || newData.val() === 'finished' || newData.val() === 'waitingInvite' || newData.val() === 'declined')" },
+        "fen": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+        "turn": { ".validate": "newData.isString() && (newData.val() === 'w' || newData.val() === 'b')" },
+        "whiteUid": { ".validate": "newData.isString()" },
+        "blackUid": { ".validate": "newData.isString()" },
+        "whiteName": { ".validate": "newData.isString() && newData.val().length <= 40" },
+        "blackName": { ".validate": "newData.isString() && newData.val().length <= 40" },
+        "moves": { ".validate": "newData.isString() || newData.isNull() || newData.isNumber() || newData.exists()" },
+        "createdAt": { ".validate": "newData.exists()" },
+        "lastMoveAt": { ".validate": "newData.exists()" }
       }
     },
+
     "loungeChat": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null",
+      ".validate": "newData.hasChildren(['uid','name','text','createdAt'])"
     },
+
     "userInvites": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null"
+        "$inviteId": {
+          ".write": "auth != null && ( (!data.exists() && newData.child('fromUid').val() === auth.uid) || data.exists() && (data.child('fromUid').val() === auth.uid || data.child('toUid').val() === auth.uid) )",
+          "fromUid": { ".validate": "newData.isString() && (data.exists() ? newData.val() === data.child('fromUid').val() : newData.val().length > 0)" },
+          "toUid": { ".validate": "newData.isString()" },
+          "status": { ".validate": "newData.isString() && (newData.val() === 'pending' || newData.val() === 'accepted' || newData.val() === 'declined' || newData.val() === 'expired')" },
+          "roomCode": { ".validate": "newData.isString() && newData.val().length <= 10" },
+          "createdAt": { ".validate": "newData.exists()" }
+        }
       }
     }
   }
