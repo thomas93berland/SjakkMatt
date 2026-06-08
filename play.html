@@ -62,59 +62,135 @@
     <button class="floating-menu" id="openDrawerBtn" type="button">☰</button>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
   <script>
-(() => {
-  const board = document.getElementById("board");
-  if (!board || board.children.length) return;
-
-  const files = ["a","b","c","d","e","f","g","h"];
-  const ranks = ["8","7","6","5","4","3","2","1"];
-
-  const pieces = {
-    a8:["black","♜"], b8:["black","♞"], c8:["black","♝"], d8:["black","♛"], e8:["black","♚"], f8:["black","♝"], g8:["black","♞"], h8:["black","♜"],
-    a7:["black","♟"], b7:["black","♟"], c7:["black","♟"], d7:["black","♟"], e7:["black","♟"], f7:["black","♟"], g7:["black","♟"], h7:["black","♟"],
-    a2:["white","♙"], b2:["white","♙"], c2:["white","♙"], d2:["white","♙"], e2:["white","♙"], f2:["white","♙"], g2:["white","♙"], h2:["white","♙"],
-    a1:["white","♖"], b1:["white","♘"], c1:["white","♗"], d1:["white","♕"], e1:["white","♔"], f1:["white","♗"], g1:["white","♘"], h1:["white","♖"]
-  };
-
-  board.style.display = "grid";
-  board.style.gridTemplateColumns = "repeat(8, 1fr)";
-  board.style.gridTemplateRows = "repeat(8, 1fr)";
-
-  for (const rank of ranks) {
-    for (const file of files) {
-      const sq = file + rank;
-      const cell = document.createElement("div");
-      cell.className = "square " + (((files.indexOf(file) + Number(rank)) % 2 === 0) ? "dark" : "light");
-      cell.style.display = "grid";
-      cell.style.placeItems = "center";
-      cell.style.aspectRatio = "1 / 1";
-
-      if (pieces[sq]) {
-        const [color, symbol] = pieces[sq];
-        const p = document.createElement("div");
-        p.textContent = symbol;
-        p.style.fontFamily = "Georgia, serif";
-        p.style.fontSize = "clamp(34px, 10vw, 82px)";
-        p.style.lineHeight = "1";
-        p.style.color = color === "white" ? "#f2d49a" : "#111";
-        p.style.textShadow = color === "white"
-          ? "0 4px 7px rgba(90,45,12,.45)"
-          : "0 4px 8px rgba(0,0,0,.7)";
-        cell.appendChild(p);
+    (() => {
+      function setStatus(text) {
+        const status = document.getElementById("status");
+        if (status) status.textContent = text;
       }
 
-      board.appendChild(cell);
-    }
-  }
+      function showDebug(text) {
+        let box = document.getElementById("playDebugBox");
+        if (!box) {
+          box = document.createElement("div");
+          box.id = "playDebugBox";
+          box.style.cssText = "position:fixed;left:10px;right:10px;bottom:82px;z-index:99999;background:#2b1009;color:#ffe0c2;border:1px solid rgba(255,160,120,.55);border-radius:14px;padding:10px 12px;font:13px/1.35 Arial,sans-serif;box-shadow:0 12px 26px rgba(0,0,0,.45);white-space:pre-wrap;";
+          document.body.appendChild(box);
+        }
+        box.textContent = text;
+      }
 
-  const status = document.getElementById("status");
-  if (status && status.textContent === "Laster sjakk...") {
-    status.textContent = "Brett klart. Sjekker innlogging...";
-  }
-})();
-    </script>
-  <script type="module" src="./app-v11.js"></script>
+      window.addEventListener("error", (event) => {
+        showDebug("JavaScript-feil:\n" + (event.message || "Ukjent feil") + "\n" + (event.filename || "") + ":" + (event.lineno || ""));
+        setStatus("JavaScript-feil. Se feilmelding nederst.");
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason;
+        showDebug("Promise/Firebase-feil:\n" + (reason?.message || reason?.code || String(reason || "Ukjent feil")));
+        setStatus("Firebase/app-feil. Se feilmelding nederst.");
+      });
+
+      function renderBootBoard() {
+        const board = document.getElementById("board");
+        if (!board || board.children.length) return;
+
+        const files = ["a","b","c","d","e","f","g","h"];
+        const ranks = ["8","7","6","5","4","3","2","1"];
+
+        const pieces = {
+          a8:["black","♜"], b8:["black","♞"], c8:["black","♝"], d8:["black","♛"], e8:["black","♚"], f8:["black","♝"], g8:["black","♞"], h8:["black","♜"],
+          a7:["black","♟"], b7:["black","♟"], c7:["black","♟"], d7:["black","♟"], e7:["black","♟"], f7:["black","♟"], g7:["black","♟"], h7:["black","♟"],
+          a2:["white","♙"], b2:["white","♙"], c2:["white","♙"], d2:["white","♙"], e2:["white","♙"], f2:["white","♙"], g2:["white","♙"], h2:["white","♙"],
+          a1:["white","♖"], b1:["white","♘"], c1:["white","♗"], d1:["white","♕"], e1:["white","♔"], f1:["white","♗"], g1:["white","♘"], h1:["white","♖"]
+        };
+
+        const style = document.createElement("style");
+        style.id = "bootBoardStyle";
+        style.textContent = `
+          #board.boot-board {
+            display:grid !important;
+            grid-template-columns:repeat(8,1fr) !important;
+            grid-template-rows:repeat(8,1fr) !important;
+            background:#4a250f !important;
+          }
+          #board.boot-board .square {
+            display:grid !important;
+            place-items:center !important;
+            aspect-ratio:1/1 !important;
+            min-width:0 !important;
+            min-height:0 !important;
+          }
+          #board.boot-board .light {
+            background:radial-gradient(circle at 35% 25%, rgba(255,255,255,.055), transparent 36%),#d9974b !important;
+          }
+          #board.boot-board .dark {
+            background:radial-gradient(circle at 35% 25%, rgba(255,255,255,.025), transparent 36%),#5b2b0d !important;
+          }
+          .boot-piece {
+            font-family:Georgia,'Times New Roman',serif;
+            font-size:clamp(34px,10vw,82px);
+            line-height:1;
+            transform:translateY(-2%);
+            pointer-events:none;
+            user-select:none;
+          }
+          .boot-piece.white-piece {
+            color:#f2d49a;
+            -webkit-text-stroke:1px rgba(154,97,38,.38);
+            text-shadow:0 1px 0 rgba(255,255,255,.34),0 5px 8px rgba(86,45,13,.42),0 10px 14px rgba(0,0,0,.18);
+          }
+          .boot-piece.black-piece {
+            color:#111;
+            -webkit-text-stroke:1px rgba(100,100,100,.45);
+            text-shadow:0 1px 0 rgba(255,255,255,.12),0 5px 8px rgba(0,0,0,.62),0 10px 14px rgba(0,0,0,.32);
+          }
+        `;
+        document.head.appendChild(style);
+
+        board.classList.add("boot-board");
+
+        for (const rank of ranks) {
+          for (const file of files) {
+            const sq = file + rank;
+            const cell = document.createElement("div");
+            cell.className = "square " + (((files.indexOf(file) + Number(rank)) % 2 === 0) ? "dark" : "light");
+            cell.dataset.square = sq;
+
+            if (pieces[sq]) {
+              const [color, symbol] = pieces[sq];
+              const p = document.createElement("div");
+              p.className = "boot-piece " + (color === "white" ? "white-piece" : "black-piece");
+              p.textContent = symbol;
+              cell.appendChild(p);
+            }
+
+            board.appendChild(cell);
+          }
+        }
+
+        if ((document.getElementById("status")?.textContent || "").includes("Laster")) {
+          setStatus("Brett klart. Starter app...");
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", renderBootBoard);
+      } else {
+        renderBootBoard();
+      }
+
+      setTimeout(() => {
+        if (!window.CHESS_LOUNGE_APP_V12_STARTED) {
+          showDebug("app-v12.js startet ikke.\nDet betyr vanligvis at modul-scriptet stoppet før første linje, eller at nettleseren blokkerte import.");
+          setStatus("Appen startet ikke. Se feilmelding nederst.");
+        }
+      }, 5000);
+    })();
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script type="module" src="./app-v12.js"></script>
 </body>
 </html>

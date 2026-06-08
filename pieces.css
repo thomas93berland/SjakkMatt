@@ -1,7 +1,6 @@
 /* =====================================================
-   THE CHESS LOUNGE - SAFE STAUNTON STYLE V11
-   Bruker eksisterende app-logikk og SVG-struktur.
-   Ingen bilde-mappe. Ingen risiko for ødelagte image-ikoner.
+   INLINE SVG CHESS PIECES FIX
+   Ingen bilde-filer. Ingen pieces-mappe. Ingen ødelagte ikoner.
    ===================================================== */
 
 .piece {
@@ -11,173 +10,77 @@
   place-items: center;
   pointer-events: none;
   user-select: none;
-  position: relative;
-  z-index: 20;
-  transform: translateZ(0);
 }
 
 .piece-svg {
-  width: 88%;
-  height: 88%;
+  width: 92%;
+  height: 92%;
   display: block;
   overflow: visible;
   pointer-events: none;
   user-select: none;
-  position: relative;
-  z-index: 21;
-  transform: translateY(-1%);
-  transition: transform 150ms ease, filter 150ms ease;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.32));
 }
 
-.piece-fill {
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.piece-line,
-.piece-detail {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.piece-shadow {
-  stroke: none;
-  fill: rgba(0, 0, 0, 0.30);
-}
-
-/* Sorte brikker - blankere Staunton-look */
-.piece.black-piece .piece-fill {
-  fill: #101010;
-  stroke: #505050;
-  stroke-width: 3.35;
-}
-
-.piece.black-piece .piece-line,
-.piece.black-piece .piece-detail {
-  stroke: #777777;
-  stroke-width: 3.05;
-}
-
-.piece.black-piece .piece-dot {
-  fill: #888888;
-}
-
-.piece.black-piece .piece-shadow {
-  fill: rgba(0, 0, 0, 0.46);
-}
-
-.piece.black-piece .piece-svg {
-  filter:
-    drop-shadow(0 1px 0 rgba(255,255,255,0.10))
-    drop-shadow(0 4px 5px rgba(0,0,0,0.62))
-    drop-shadow(0 9px 12px rgba(0,0,0,0.32));
-}
-
-/* Lyse brikker - varm elfenben/trebrikke */
 .piece.white-piece .piece-fill {
-  fill: #f2d49a;
-  stroke: #9a6126;
-  stroke-width: 3.35;
+  fill: #f7f4ec;
+  stroke: #b8aea1;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .piece.white-piece .piece-line,
 .piece.white-piece .piece-detail {
-  stroke: #9e6429;
-  stroke-width: 3.05;
+  fill: none;
+  stroke: #8f857b;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .piece.white-piece .piece-dot {
-  fill: #9e6429;
+  fill: #8f857b;
 }
 
-.piece.white-piece .piece-shadow {
-  fill: rgba(74, 40, 12, 0.20);
+.piece.black-piece .piece-fill {
+  fill: #181818;
+  stroke: #3d3d3d;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-.piece.white-piece .piece-svg {
-  filter:
-    drop-shadow(0 1px 0 rgba(255,255,255,0.36))
-    drop-shadow(0 4px 5px rgba(86,45,13,0.42))
-    drop-shadow(0 8px 10px rgba(0,0,0,0.18));
+.piece.black-piece .piece-line,
+.piece.black-piece .piece-detail {
+  fill: none;
+  stroke: #6a6a6a;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* Markeringer skal aldri skjule brikkene */
-.square {
-  position: relative;
-  isolation: isolate;
+.piece.black-piece .piece-dot {
+  fill: #6a6a6a;
 }
 
-.square::before,
-.square::after {
-  z-index: 2;
+.piece-shadow {
+  fill: rgba(0, 0, 0, 0.22);
+  stroke: none;
 }
 
-.piece,
-.piece-svg {
-  z-index: 20 !important;
+@media (max-width: 620px) {
+  .piece-svg {
+    width: 88%;
+    height: 88%;
+  }
 }
 
-/* Valg og trekk */
-.square.selected {
-  box-shadow:
-    inset 0 0 0 4px rgba(255, 224, 154, 0.80),
-    inset 0 0 18px rgba(255, 210, 120, 0.24);
-  z-index: 3;
-}
-
-.square.selected .piece-svg {
-  transform: translateY(-5%) scale(1.06);
-}
-
-.square:hover .piece-svg {
-  transform: translateY(-3%) scale(1.025);
-}
-
-.square.legal::after,
-.square.capture::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  border-radius: 999px;
-  z-index: 3;
-}
-
-.square.legal::after {
-  width: 17%;
-  height: 17%;
-  background: rgba(38, 26, 14, 0.25);
-  box-shadow:
-    0 0 0 6px rgba(255, 231, 178, 0.10),
-    0 0 14px rgba(255, 225, 170, 0.18);
-}
-
-.square.capture::after {
-  width: 66%;
-  height: 66%;
-  border: 3px solid rgba(255, 126, 96, 0.48);
-  box-shadow:
-    0 0 0 3px rgba(255, 126, 96, 0.08),
-    0 0 14px rgba(255, 126, 96, 0.20);
-}
-
-.square.last-from {
-  box-shadow: inset 0 0 0 999px rgba(255, 213, 136, 0.13);
-}
-
-.square.last-to {
-  box-shadow:
-    inset 0 0 0 999px rgba(255, 213, 136, 0.19),
-    inset 0 0 0 2px rgba(255, 226, 165, 0.32);
-}
-
-/* Gammelt image-oppsett av */
+/* Sørger for at gammelt img-oppsett ikke ødelegger noe */
 .piece-img {
   display: none !important;
 }
+
 
 /* =====================================================
    15 MIN TIMER
@@ -188,10 +91,10 @@
   align-items: center;
   justify-content: center;
   margin-top: 8px;
-  padding: 5px 10px;
+  padding: 5px 9px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(236, 190, 123, 0.22);
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(236, 190, 123, 0.18);
   color: #ffe1a3;
   font-style: normal;
   font-weight: 900;
@@ -211,25 +114,7 @@
   border-color: rgba(255, 130, 100, 0.45);
 }
 
-.sound-toggle.sound-off {
-  opacity: 0.72;
-}
-
-#board.board-pop {
-  animation: boardPop 210ms ease-out;
-}
-
-@keyframes boardPop {
-  0% { transform: scale(.994); filter: brightness(1.045); }
-  100% { transform: scale(1); filter: brightness(1); }
-}
-
 @media (max-width: 620px) {
-  .piece-svg {
-    width: 86%;
-    height: 86%;
-  }
-
   .player-clock {
     font-size: 14px;
     padding: 4px 8px;
@@ -237,10 +122,15 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #board.board-pop,
-  .piece-svg {
-    animation: none !important;
-    transition: none !important;
-  }
+
+/* =====================================================
+   CHESS LOUNGE VISUAL FX + SOUND UI
+   ===================================================== */
+.board-frame{position:relative;overflow:hidden}.board-frame::before{content:"";position:absolute;inset:12px;pointer-events:none;border-radius:20px;background:radial-gradient(circle at 22% 18%,rgba(255,222,162,.15),transparent 28%),radial-gradient(circle at 78% 82%,rgba(199,132,56,.12),transparent 30%);opacity:.8;mix-blend-mode:screen;animation:loungeGlow 4.8s ease-in-out infinite;z-index:0}#board{position:relative;z-index:1}#board.board-pop{animation:boardPop 240ms ease-out}.square{position:relative;overflow:hidden;transition:filter 180ms ease,transform 180ms ease,box-shadow 180ms ease}.square::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,231,178,.22),transparent 64%);opacity:0;transform:scale(.62);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}.square.selected{box-shadow:inset 0 0 0 4px rgba(255,224,154,.86),inset 0 0 22px rgba(255,210,120,.42);z-index:2}.square.selected::before{opacity:1;transform:scale(1)}.square.selected .piece-svg{animation:selectedPiecePulse 920ms ease-in-out infinite}.square.legal::after,.square.capture::after{content:"";position:absolute;left:50%;top:50%;pointer-events:none;transform:translate(-50%,-50%);border-radius:999px}.square.legal::after{width:21%;height:21%;background:rgba(38,26,14,.32);box-shadow:0 0 0 7px rgba(255,231,178,.16),0 0 18px rgba(255,225,170,.26);animation:legalDot 1.15s ease-in-out infinite}.square.capture::after{width:72%;height:72%;border:4px solid rgba(255,126,96,.72);box-shadow:0 0 0 4px rgba(255,126,96,.14),0 0 22px rgba(255,126,96,.38);animation:captureRing 900ms ease-in-out infinite}.square.last-from,.square.last-to{box-shadow:inset 0 0 0 999px rgba(255,213,136,.18)}.square.last-to{box-shadow:inset 0 0 0 999px rgba(255,213,136,.24),inset 0 0 0 3px rgba(255,226,165,.46)}.square.move-flash::before{opacity:1;animation:moveFlash 720ms ease-out}.piece-svg{transition:transform 180ms ease,filter 180ms ease,opacity 180ms ease}.square:hover .piece-svg{transform:translateY(-2px) scale(1.03)}.sound-toggle.sound-off{opacity:.72}.game-status.check-alert{color:#ffc8b8;text-shadow:0 0 16px rgba(255,120,90,.5);animation:statusPulse 900ms ease-in-out 2}@keyframes loungeGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.95;transform:scale(1.015)}}@keyframes boardPop{0%{transform:scale(.992);filter:brightness(1.08)}100%{transform:scale(1);filter:brightness(1)}}@keyframes selectedPiecePulse{0%,100%{transform:translateY(-1px) scale(1.05);filter:drop-shadow(0 7px 7px rgba(0,0,0,.36))}50%{transform:translateY(-5px) scale(1.11);filter:drop-shadow(0 14px 11px rgba(0,0,0,.42))}}@keyframes legalDot{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.72}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@keyframes captureRing{0%,100%{transform:translate(-50%,-50%) scale(.96);opacity:.76}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}}@keyframes moveFlash{0%{opacity:0;transform:scale(.65)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1.45)}}@keyframes statusPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.board-frame::before,#board.board-pop,.square.selected .piece-svg,.square.legal::after,.square.capture::after,.square.move-flash::before,.game-status.check-alert{animation:none!important}}
+
+
+/* V12 safety: board squares should never collapse */
+#board .square {
+  min-width: 0;
+  min-height: 0;
 }
