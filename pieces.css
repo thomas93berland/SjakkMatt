@@ -274,3 +274,20 @@
     height: min(100vw, calc(100dvh - 92px)) !important;
   }
 }
+
+
+/* V18 hard override */
+.coord {
+  display: none !important;
+}
+
+#playAuthDebug,
+#playDebugBox {
+  display: none !important;
+}
+
+.board-frame {
+  align-items: start !important;
+  justify-items: center !important;
+  padding-top: 2px !important;
+}
