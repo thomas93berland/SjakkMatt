@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chess Lounge Diagnose</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#120804;color:#fff0d7;padding:18px}
+    .card{max-width:760px;margin:auto;background:#24150d;border:1px solid rgba(236,190,123,.2);border-radius:20px;padding:20px}
+    code{display:block;background:rgba(0,0,0,.3);padding:12px;border-radius:12px;white-space:pre-wrap;color:#ffe0a6}
+    .ok{color:#bff0c5}.bad{color:#ffb3a3}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Chess Lounge diagnose</h1>
+    <p>Dette sjekker at de viktigste filene finnes.</p>
+    <code id="out">Sjekker...</code>
+  </div>
+  <script>
+    const files = ["./app.js","./app-v11.js","./style.css","./pieces.css","./play.html"];
+    const out = document.getElementById("out");
+    Promise.all(files.map(async f => {
+      try {
+        const r = await fetch(f + "?v=" + Date.now(), {cache:"no-store"});
+        return `${r.ok ? "✅" : "❌"} ${f} - ${r.status}`;
+      } catch(e) {
+        return `❌ ${f} - ${e.message}`;
+      }
+    })).then(lines => out.textContent = lines.join("\\n"));
+  </script>
+</body>
+</html>

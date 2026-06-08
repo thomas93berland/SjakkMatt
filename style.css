@@ -2,7 +2,9 @@
 
 
 /* =====================================================
-   PLAY PAGE EDGE-TO-EDGE BOARD OVERRIDE SAFE V10
+   PLAY PAGE RECOVERY V11
+   Fikser spillrom: drawer som overlay, brett kant-til-kant,
+   og ingen layout som stjeler 330px fra brettet.
    ===================================================== */
 
 .play-page {
@@ -39,6 +41,11 @@
   padding: 8px 10px;
   background: linear-gradient(180deg, rgba(17, 8, 4, 0.84), rgba(17, 8, 4, 0.50));
   backdrop-filter: blur(4px);
+}
+
+.game-center {
+  text-align: center;
+  min-width: 160px;
 }
 
 .board-frame {

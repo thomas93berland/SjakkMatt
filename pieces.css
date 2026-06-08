@@ -1,7 +1,7 @@
 /* =====================================================
-   THE CHESS LOUNGE - SAFE STAUNTON STYLE V10
+   THE CHESS LOUNGE - SAFE STAUNTON STYLE V11
    Bruker eksisterende app-logikk og SVG-struktur.
-   Målet er: finere Staunton-følelse uten at brettet forsvinner.
+   Ingen bilde-mappe. Ingen risiko for ødelagte image-ikoner.
    ===================================================== */
 
 .piece {
@@ -29,7 +29,6 @@
   transition: transform 150ms ease, filter 150ms ease;
 }
 
-/* Felles mer Staunton / 3D-ish uttrykk */
 .piece-fill {
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -47,7 +46,7 @@
   fill: rgba(0, 0, 0, 0.30);
 }
 
-/* Sorte brikker - blank sort som bildet */
+/* Sorte brikker - blankere Staunton-look */
 .piece.black-piece .piece-fill {
   fill: #101010;
   stroke: #505050;
@@ -103,7 +102,7 @@
     drop-shadow(0 8px 10px rgba(0,0,0,0.18));
 }
 
-/* Størrelse og stabilitet */
+/* Markeringer skal aldri skjule brikkene */
 .square {
   position: relative;
   isolation: isolate;
@@ -119,7 +118,7 @@
   z-index: 20 !important;
 }
 
-/* Ikke la sjakk-/trekkmarkeringer skjule brikker */
+/* Valg og trekk */
 .square.selected {
   box-shadow:
     inset 0 0 0 4px rgba(255, 224, 154, 0.80),
