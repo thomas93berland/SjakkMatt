@@ -291,3 +291,113 @@
   justify-items: center !important;
   padding-top: 2px !important;
 }
+
+
+/* =====================================================
+   V19 - Brett opp under timerne + koordinater helt bort
+   ===================================================== */
+
+/* Koordinater fjernes uansett om gammel cache prøver å vise dem */
+.coord,
+.square .coord,
+#board .coord {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Fjern debugbokser hvis gamle script skulle ligge i cache */
+#playAuthDebug,
+#playDebugBox {
+  display: none !important;
+}
+
+/* Gjør spillområdet til en ren vertikal stack */
+.play-page .game-area {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  height: 100dvh !important;
+  padding: 0 !important;
+}
+
+/* Topplinja skal kun ta nødvendig plass */
+.play-page .game-top {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+/* Flytt brettet rett opp under timerne */
+.play-page .board-frame {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: 100vw !important;
+  margin-top: 4px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+/* Behold stort kant-til-kant brett, men ikke la det presses ned */
+.play-page #board {
+  width: min(100vw, calc(100dvh - 142px)) !important;
+  height: min(100vw, calc(100dvh - 142px)) !important;
+  aspect-ratio: 1 / 1 !important;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Trelistene beholdes, men ligger diskret */
+.play-page #board::before,
+.play-page #board::after {
+  height: clamp(6px, 1vw, 10px) !important;
+}
+
+/* Mobil: enda nærmere timerne */
+@media (max-width: 700px) {
+  .play-page .game-top {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .play-page .player-pill {
+    padding: 7px 9px !important;
+  }
+
+  .play-page .player-clock {
+    margin-top: 4px !important;
+  }
+
+  .play-page .board-frame {
+    margin-top: 2px !important;
+  }
+
+  .play-page #board {
+    width: min(100vw, calc(100dvh - 128px)) !important;
+    height: min(100vw, calc(100dvh - 128px)) !important;
+  }
+}
+
+/* Små skjermer: mest mulig opp uten at toppfeltet kolliderer */
+@media (max-width: 480px) {
+  .play-page .game-status {
+    margin-top: 3px !important;
+  }
+
+  .play-page .board-frame {
+    margin-top: 0 !important;
+  }
+
+  .play-page #board {
+    width: min(100vw, calc(100dvh - 122px)) !important;
+    height: min(100vw, calc(100dvh - 122px)) !important;
+  }
+}
