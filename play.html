@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>The Chess Lounge | Spill</title>
-  <link rel="stylesheet" href="./style.css?v=19" />
-  <link rel="stylesheet" href="./pieces.css?v=19" />
+  <link rel="stylesheet" href="./style.css?v=20" />
+  <link rel="stylesheet" href="./pieces.css?v=20" />
 
   <style>
     /* Ekstra cache-sikkerhet: skjul koordinater direkte i HTML også */
@@ -51,6 +51,14 @@
       <button class="primary-btn full" id="createRoomBtn" type="button">Lag nytt rom</button>
       <button class="ghost-btn full sound-toggle" id="soundToggleBtn" type="button">Lyd: på</button>
 
+      <label for="pieceThemeSelect">Brikkestil</label>
+      <select id="pieceThemeSelect" class="lounge-select">
+        <option value="lounge">Lounge Staunton</option>
+        <option value="wood">Wood Classic</option>
+        <option value="gold">Gold & Black</option>
+        <option value="minimal">Minimal Clean</option>
+      </select>
+
       <label for="joinCode">Bli med i rom</label>
       <input id="joinCode" maxlength="5" placeholder="Romkode" autocomplete="off" />
 
@@ -69,6 +77,6 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <script type="module" src="./app-v19.js?v=19"></script>
+  <script type="module" src="./app-v20.js?v=20"></script>
 </body>
 </html>
