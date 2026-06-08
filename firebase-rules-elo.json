@@ -1,0 +1,58 @@
+{
+  "rules": {
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      },
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        "elo": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "wins": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "losses": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "draws": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "lastRatingChange": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "lastRatedAt": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (data.parent().child('lastRatedGame').exists() && root.child('games').child(data.parent().child('lastRatedGame').val()).child('status').val() === 'finished' && root.child('games').child(data.parent().child('lastRatedGame').val()).child('eloLock').val() === auth.uid && (root.child('games').child(data.parent().child('lastRatedGame').val()).child('whiteUid').val() === $uid || root.child('games').child(data.parent().child('lastRatedGame').val()).child('blackUid').val() === $uid)))"
+        },
+        "lastRatedGame": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || (root.child('games').child(newData.val()).child('status').val() === 'finished' && root.child('games').child(newData.val()).child('eloLock').val() === auth.uid && (root.child('games').child(newData.val()).child('whiteUid').val() === $uid || root.child('games').child(newData.val()).child('blackUid').val() === $uid)))"
+        },
+        "$other": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
+        }
+      }
+    },
+    "games": {
+      ".read": "auth != null",
+      "$gameId": {
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('banned').val() != true || root.child('admins').child(auth.uid).val() === true)"
+      }
+    },
+    "loungeChat": {
+      ".read": "auth != null",
+      "$messageId": {
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('banned').val() != true || root.child('admins').child(auth.uid).val() === true)"
+      }
+    },
+    "userInvites": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('banned').val() != true || root.child('admins').child(auth.uid).val() === true)"
+      }
+    }
+  }
+}
