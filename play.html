@@ -70,27 +70,26 @@
         if (status) status.textContent = text;
       }
 
-      function showDebug(text) {
-        let box = document.getElementById("playDebugBox");
+      function ensureDebugBox() {
+        let box = document.getElementById("playAuthDebug");
         if (!box) {
           box = document.createElement("div");
-          box.id = "playDebugBox";
-          box.style.cssText = "position:fixed;left:10px;right:10px;bottom:82px;z-index:99999;background:#2b1009;color:#ffe0c2;border:1px solid rgba(255,160,120,.55);border-radius:14px;padding:10px 12px;font:13px/1.35 Arial,sans-serif;box-shadow:0 12px 26px rgba(0,0,0,.45);white-space:pre-wrap;";
+          box.id = "playAuthDebug";
+          box.style.cssText = "position:fixed;left:10px;right:10px;bottom:82px;z-index:99999;background:rgba(43,16,9,.96);color:#ffe0c2;border:1px solid rgba(255,160,120,.50);border-radius:14px;padding:10px 12px;font:13px/1.35 Arial,sans-serif;box-shadow:0 12px 26px rgba(0,0,0,.45);white-space:pre-wrap;";
+          box.textContent = "Auth-debug: starter...";
           document.body.appendChild(box);
         }
-        box.textContent = text;
+        return box;
       }
 
-      window.addEventListener("error", (event) => {
-        showDebug("JavaScript-feil:\n" + (event.message || "Ukjent feil") + "\n" + (event.filename || "") + ":" + (event.lineno || ""));
-        setStatus("JavaScript-feil. Se feilmelding nederst.");
-      });
+      function setupDrawerFallback() {
+        const open = document.getElementById("openDrawerBtn");
+        const close = document.getElementById("closeDrawerBtn");
+        const drawer = document.getElementById("playDrawer");
 
-      window.addEventListener("unhandledrejection", (event) => {
-        const reason = event.reason;
-        showDebug("Promise/Firebase-feil:\n" + (reason?.message || reason?.code || String(reason || "Ukjent feil")));
-        setStatus("Firebase/app-feil. Se feilmelding nederst.");
-      });
+        open?.addEventListener("click", () => drawer?.classList.add("open"));
+        close?.addEventListener("click", () => drawer?.classList.remove("open"));
+      }
 
       function renderBootBoard() {
         const board = document.getElementById("board");
@@ -103,52 +102,20 @@
           a8:["black","♜"], b8:["black","♞"], c8:["black","♝"], d8:["black","♛"], e8:["black","♚"], f8:["black","♝"], g8:["black","♞"], h8:["black","♜"],
           a7:["black","♟"], b7:["black","♟"], c7:["black","♟"], d7:["black","♟"], e7:["black","♟"], f7:["black","♟"], g7:["black","♟"], h7:["black","♟"],
           a2:["white","♟"], b2:["white","♟"], c2:["white","♟"], d2:["white","♟"], e2:["white","♟"], f2:["white","♟"], g2:["white","♟"], h2:["white","♟"],
-          a1:["white","♖"], b1:["white","♘"], c1:["white","♗"], d1:["white","♕"], e1:["white","♔"], f1:["white","♗"], g1:["white","♘"], h1:["white","♖"]
+          a1:["white","♜"], b1:["white","♞"], c1:["white","♝"], d1:["white","♛"], e1:["white","♚"], f1:["white","♝"], g1:["white","♞"], h1:["white","♜"]
         };
 
         const style = document.createElement("style");
-        style.id = "bootBoardStyle";
         style.textContent = `
-          #board.boot-board {
-            display:grid !important;
-            grid-template-columns:repeat(8,1fr) !important;
-            grid-template-rows:repeat(8,1fr) !important;
-            background:#4a250f !important;
-          }
-          #board.boot-board .square {
-            display:grid !important;
-            place-items:center !important;
-            aspect-ratio:1/1 !important;
-            min-width:0 !important;
-            min-height:0 !important;
-          }
-          #board.boot-board .light {
-            background:radial-gradient(circle at 35% 25%, rgba(255,255,255,.055), transparent 36%),#d9974b !important;
-          }
-          #board.boot-board .dark {
-            background:radial-gradient(circle at 35% 25%, rgba(255,255,255,.025), transparent 36%),#5b2b0d !important;
-          }
-          .boot-piece {
-            font-family:Georgia,'Times New Roman',serif;
-            font-size:clamp(34px,10vw,82px);
-            line-height:1;
-            transform:translateY(-2%);
-            pointer-events:none;
-            user-select:none;
-          }
-          .boot-piece.white-piece {
-            color:#f2d49a;
-            -webkit-text-stroke:1px rgba(154,97,38,.38);
-            text-shadow:0 1px 0 rgba(255,255,255,.34),0 5px 8px rgba(86,45,13,.42),0 10px 14px rgba(0,0,0,.18);
-          }
-          .boot-piece.black-piece {
-            color:#111;
-            -webkit-text-stroke:1px rgba(100,100,100,.45);
-            text-shadow:0 1px 0 rgba(255,255,255,.12),0 5px 8px rgba(0,0,0,.62),0 10px 14px rgba(0,0,0,.32);
-          }
+          #board.boot-board{display:grid!important;grid-template-columns:repeat(8,1fr)!important;grid-template-rows:repeat(8,1fr)!important;background:#4a250f!important}
+          #board.boot-board .square{display:grid!important;place-items:center!important;aspect-ratio:1/1!important;min-width:0!important;min-height:0!important}
+          #board.boot-board .light{background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.055),transparent 36%),#d9974b!important}
+          #board.boot-board .dark{background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.025),transparent 36%),#5b2b0d!important}
+          .boot-piece{font-family:Georgia,'Times New Roman',serif;font-size:clamp(34px,10vw,82px);line-height:1;transform:translateY(-2%);pointer-events:none;user-select:none}
+          .boot-piece.white-piece{color:#f2d49a;-webkit-text-stroke:1px rgba(154,97,38,.38);text-shadow:0 1px 0 rgba(255,255,255,.34),0 5px 8px rgba(86,45,13,.42),0 10px 14px rgba(0,0,0,.18)}
+          .boot-piece.black-piece{color:#111;-webkit-text-stroke:1px rgba(100,100,100,.45);text-shadow:0 1px 0 rgba(255,255,255,.12),0 5px 8px rgba(0,0,0,.62),0 10px 14px rgba(0,0,0,.32)}
         `;
         document.head.appendChild(style);
-
         board.classList.add("boot-board");
 
         for (const rank of ranks) {
@@ -170,27 +137,78 @@
           }
         }
 
-        if ((document.getElementById("status")?.textContent || "").includes("Laster")) {
-          setStatus("Brett klart. Starter app...");
-        }
+        setStatus("Brett klart. Sjekker innlogging...");
+      }
+
+      window.addEventListener("error", (event) => {
+        const box = ensureDebugBox();
+        box.textContent = "JavaScript-feil:\n" + (event.message || "Ukjent feil") + "\n" + (event.filename || "") + ":" + (event.lineno || "");
+        setStatus("JavaScript-feil. Se nederst.");
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason;
+        const box = ensureDebugBox();
+        box.textContent = "Promise/Firebase-feil:\n" + (reason?.message || reason?.code || String(reason || "Ukjent feil"));
+        setStatus("Firebase/app-feil. Se nederst.");
+      });
+
+      function start() {
+        setupDrawerFallback();
+        renderBootBoard();
+        ensureDebugBox();
+
+        setTimeout(() => {
+          if (!window.CHESS_LOUNGE_APP_V13_MODULE_RUNNING) {
+            ensureDebugBox().textContent = "Hovedappen app-v13.js har ikke startet etter 5 sekunder.";
+            setStatus("Hovedappen startet ikke.");
+          }
+        }, 5000);
       }
 
       if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", renderBootBoard);
+        document.addEventListener("DOMContentLoaded", start);
       } else {
-        renderBootBoard();
+        start();
       }
-
-      setTimeout(() => {
-        if (!window.CHESS_LOUNGE_APP_V12_STARTED) {
-          showDebug("app-v12.js startet ikke.\nDet betyr vanligvis at modul-scriptet stoppet før første linje, eller at nettleseren blokkerte import.");
-          setStatus("Appen startet ikke. Se feilmelding nederst.");
-        }
-      }, 5000);
     })();
   </script>
 
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHVjtKQv1tZ8sV9MKOYSr05Y8rXxv-tLQ",
+      authDomain: "berlands-sjakk.firebaseapp.com",
+      databaseURL: "https://berlands-sjakk-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "berlands-sjakk",
+      storageBucket: "berlands-sjakk.firebasestorage.app",
+      messagingSenderId: "884597270594",
+      appId: "1:884597270594:web:0284119adb9ceacc7ba5db"
+    };
+
+    const box = document.getElementById("playAuthDebug");
+    try {
+      const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      if (box) box.textContent = "Auth-debug: Firebase import ok. Venter på bruker...";
+
+      onAuthStateChanged(auth, (user) => {
+        if (box) {
+          box.textContent = user
+            ? "Auth-debug: innlogget som " + (user.email || user.uid)
+            : "Auth-debug: ingen bruker innlogget. Gå til innlogging først.";
+        }
+      }, (error) => {
+        if (box) box.textContent = "Auth-debug feil: " + (error.code || error.message || String(error));
+      });
+    } catch (error) {
+      if (box) box.textContent = "Auth-debug crash: " + (error.message || String(error));
+    }
+  </script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <script type="module" src="./app-v12.js"></script>
+  <script type="module" src="./app-v14.js"></script>
 </body>
 </html>
