@@ -1,0 +1,50 @@
+#adminAccessButton {
+  position: fixed;
+  right: 18px;
+  bottom: 92px;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(236, 190, 123, 0.42);
+  background: linear-gradient(135deg, #e3b46d, #c88438);
+  color: #241309;
+  border-radius: 999px;
+  padding: 13px 16px;
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.28);
+  cursor: pointer;
+}
+
+#adminAccessButton:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.admin-access-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(35, 19, 9, 0.14);
+  font-size: 19px;
+}
+
+@media (max-width: 620px) {
+  #adminAccessButton {
+    right: 14px;
+    bottom: 84px;
+    padding: 12px 14px;
+  }
+
+  .admin-access-text {
+    display: none;
+  }
+
+  .admin-access-icon {
+    width: 34px;
+    height: 34px;
+  }
+}
