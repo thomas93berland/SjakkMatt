@@ -63,6 +63,58 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script>
+(() => {
+  const board = document.getElementById("board");
+  if (!board || board.children.length) return;
+
+  const files = ["a","b","c","d","e","f","g","h"];
+  const ranks = ["8","7","6","5","4","3","2","1"];
+
+  const pieces = {
+    a8:["black","♜"], b8:["black","♞"], c8:["black","♝"], d8:["black","♛"], e8:["black","♚"], f8:["black","♝"], g8:["black","♞"], h8:["black","♜"],
+    a7:["black","♟"], b7:["black","♟"], c7:["black","♟"], d7:["black","♟"], e7:["black","♟"], f7:["black","♟"], g7:["black","♟"], h7:["black","♟"],
+    a2:["white","♙"], b2:["white","♙"], c2:["white","♙"], d2:["white","♙"], e2:["white","♙"], f2:["white","♙"], g2:["white","♙"], h2:["white","♙"],
+    a1:["white","♖"], b1:["white","♘"], c1:["white","♗"], d1:["white","♕"], e1:["white","♔"], f1:["white","♗"], g1:["white","♘"], h1:["white","♖"]
+  };
+
+  board.style.display = "grid";
+  board.style.gridTemplateColumns = "repeat(8, 1fr)";
+  board.style.gridTemplateRows = "repeat(8, 1fr)";
+
+  for (const rank of ranks) {
+    for (const file of files) {
+      const sq = file + rank;
+      const cell = document.createElement("div");
+      cell.className = "square " + (((files.indexOf(file) + Number(rank)) % 2 === 0) ? "dark" : "light");
+      cell.style.display = "grid";
+      cell.style.placeItems = "center";
+      cell.style.aspectRatio = "1 / 1";
+
+      if (pieces[sq]) {
+        const [color, symbol] = pieces[sq];
+        const p = document.createElement("div");
+        p.textContent = symbol;
+        p.style.fontFamily = "Georgia, serif";
+        p.style.fontSize = "clamp(34px, 10vw, 82px)";
+        p.style.lineHeight = "1";
+        p.style.color = color === "white" ? "#f2d49a" : "#111";
+        p.style.textShadow = color === "white"
+          ? "0 4px 7px rgba(90,45,12,.45)"
+          : "0 4px 8px rgba(0,0,0,.7)";
+        cell.appendChild(p);
+      }
+
+      board.appendChild(cell);
+    }
+  }
+
+  const status = document.getElementById("status");
+  if (status && status.textContent === "Laster sjakk...") {
+    status.textContent = "Brett klart. Sjekker innlogging...";
+  }
+})();
+    </script>
   <script type="module" src="./app-v11.js"></script>
 </body>
 </html>
