@@ -1,6 +1,7 @@
 /* =====================================================
-   INLINE SVG CHESS PIECES FIX
-   Ingen bilde-filer. Ingen pieces-mappe. Ingen ødelagte ikoner.
+   THE CHESS LOUNGE - STAUNTON PIECES V9
+   Mer lik referansebildet: blank sort, varm elfenben/hvit,
+   bred base, tydelige detaljer og stabil visning.
    ===================================================== */
 
 .piece {
@@ -10,77 +11,213 @@
   place-items: center;
   pointer-events: none;
   user-select: none;
+  position: relative;
+  z-index: 20;
+  transform: translateZ(0);
 }
 
-.piece-svg {
-  width: 92%;
-  height: 92%;
+.piece-svg,
+.staunton-svg {
+  width: 88%;
+  height: 88%;
   display: block;
   overflow: visible;
   pointer-events: none;
   user-select: none;
-  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.32));
+  position: relative;
+  z-index: 22;
+  transform: translateY(-1%);
+  transition: transform 160ms ease, filter 160ms ease;
 }
 
-.piece.white-piece .piece-fill {
-  fill: #f7f4ec;
-  stroke: #b8aea1;
-  stroke-width: 3.2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
+.piece-shadow {
+  stroke: none;
+  fill: rgba(0, 0, 0, 0.30);
 }
 
-.piece.white-piece .piece-line,
-.piece.white-piece .piece-detail {
-  fill: none;
-  stroke: #8f857b;
-  stroke-width: 3.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.piece.white-piece .piece-dot {
-  fill: #8f857b;
-}
-
+/* Sorte brikker */
 .piece.black-piece .piece-fill {
-  fill: #181818;
-  stroke: #3d3d3d;
-  stroke-width: 3.2;
+  fill: #111111;
+  stroke: #4a4a4a;
+  stroke-width: 3.1;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 
+.piece.black-piece .piece-rim,
 .piece.black-piece .piece-line,
 .piece.black-piece .piece-detail {
   fill: none;
-  stroke: #6a6a6a;
-  stroke-width: 3.1;
+  stroke: #717171;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.piece.black-piece .piece-highlight {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.30);
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .piece.black-piece .piece-dot {
-  fill: #6a6a6a;
+  fill: #8a8a8a;
 }
 
-.piece-shadow {
-  fill: rgba(0, 0, 0, 0.22);
-  stroke: none;
+.piece.black-piece .piece-shadow {
+  fill: rgba(0, 0, 0, 0.42);
 }
 
-@media (max-width: 620px) {
-  .piece-svg {
-    width: 88%;
-    height: 88%;
-  }
+.piece.black-piece .piece-svg {
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,0.12))
+    drop-shadow(0 5px 5px rgba(0,0,0,0.58))
+    drop-shadow(0 9px 12px rgba(0,0,0,0.34));
 }
 
-/* Sørger for at gammelt img-oppsett ikke ødelegger noe */
+/* Hvite / lyse brikker */
+.piece.white-piece .piece-fill {
+  fill: #f2d39a;
+  stroke: #9b6126;
+  stroke-width: 3.1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.piece.white-piece .piece-rim,
+.piece.white-piece .piece-line,
+.piece.white-piece .piece-detail {
+  fill: none;
+  stroke: #9d6428;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.piece.white-piece .piece-highlight {
+  fill: none;
+  stroke: rgba(255, 248, 218, 0.82);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.piece.white-piece .piece-dot {
+  fill: #9d6428;
+}
+
+.piece.white-piece .piece-shadow {
+  fill: rgba(67, 38, 13, 0.20);
+}
+
+.piece.white-piece .piece-svg {
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,0.32))
+    drop-shadow(0 4px 5px rgba(83,45,13,0.42))
+    drop-shadow(0 8px 10px rgba(0,0,0,0.20));
+}
+
+/* Ekstra markering på kryss */
+.piece-detail.cross {
+  stroke-width: 3.4;
+}
+
+/* Brikker alltid over effekter */
+.square {
+  position: relative;
+  isolation: isolate;
+}
+
+.square::before,
+.square::after {
+  z-index: 2;
+}
+
+.piece,
+.piece-svg {
+  z-index: 20 !important;
+}
+
+/* Sjakkmarkering uten å dekke kongen */
+.square.king-in-check {
+  box-shadow:
+    inset 0 0 0 4px rgba(255, 112, 82, 0.82),
+    inset 0 0 26px rgba(255, 68, 42, 0.32),
+    0 0 18px rgba(255, 68, 42, 0.20);
+}
+
+.square.king-in-check::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 16px;
+  border: 3px solid rgba(255, 116, 86, 0.62);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Valg og trekk */
+.square.selected {
+  box-shadow:
+    inset 0 0 0 4px rgba(255, 224, 154, 0.86),
+    inset 0 0 18px rgba(255, 210, 120, 0.26);
+  z-index: 3;
+}
+
+.square.selected .piece-svg {
+  transform: translateY(-5%) scale(1.07);
+}
+
+.square:hover .piece-svg {
+  transform: translateY(-3%) scale(1.025);
+}
+
+.square.legal::after,
+.square.capture::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  z-index: 3;
+}
+
+.square.legal::after {
+  width: 17%;
+  height: 17%;
+  background: rgba(38, 26, 14, 0.26);
+  box-shadow:
+    0 0 0 6px rgba(255, 231, 178, 0.10),
+    0 0 14px rgba(255, 225, 170, 0.18);
+}
+
+.square.capture::after {
+  width: 66%;
+  height: 66%;
+  border: 3px solid rgba(255, 126, 96, 0.48);
+  box-shadow:
+    0 0 0 3px rgba(255, 126, 96, 0.08),
+    0 0 14px rgba(255, 126, 96, 0.20);
+}
+
+.square.last-from {
+  box-shadow: inset 0 0 0 999px rgba(255, 213, 136, 0.13);
+}
+
+.square.last-to {
+  box-shadow:
+    inset 0 0 0 999px rgba(255, 213, 136, 0.19),
+    inset 0 0 0 2px rgba(255, 226, 165, 0.32);
+}
+
+/* Gammelt image-oppsett av */
 .piece-img {
   display: none !important;
 }
-
 
 /* =====================================================
    15 MIN TIMER
@@ -91,10 +228,10 @@
   align-items: center;
   justify-content: center;
   margin-top: 8px;
-  padding: 5px 9px;
+  padding: 5px 10px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.24);
-  border: 1px solid rgba(236, 190, 123, 0.18);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(236, 190, 123, 0.22);
   color: #ffe1a3;
   font-style: normal;
   font-weight: 900;
@@ -114,7 +251,26 @@
   border-color: rgba(255, 130, 100, 0.45);
 }
 
+.sound-toggle.sound-off {
+  opacity: 0.72;
+}
+
+#board.board-pop {
+  animation: boardPop 210ms ease-out;
+}
+
+@keyframes boardPop {
+  0% { transform: scale(.994); filter: brightness(1.045); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
 @media (max-width: 620px) {
+  .piece-svg,
+  .staunton-svg {
+    width: 86%;
+    height: 86%;
+  }
+
   .player-clock {
     font-size: 14px;
     padding: 4px 8px;
@@ -122,8 +278,10 @@
   }
 }
 
-
-/* =====================================================
-   CHESS LOUNGE VISUAL FX + SOUND UI
-   ===================================================== */
-.board-frame{position:relative;overflow:hidden}.board-frame::before{content:"";position:absolute;inset:12px;pointer-events:none;border-radius:20px;background:radial-gradient(circle at 22% 18%,rgba(255,222,162,.15),transparent 28%),radial-gradient(circle at 78% 82%,rgba(199,132,56,.12),transparent 30%);opacity:.8;mix-blend-mode:screen;animation:loungeGlow 4.8s ease-in-out infinite;z-index:0}#board{position:relative;z-index:1}#board.board-pop{animation:boardPop 240ms ease-out}.square{position:relative;overflow:hidden;transition:filter 180ms ease,transform 180ms ease,box-shadow 180ms ease}.square::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,231,178,.22),transparent 64%);opacity:0;transform:scale(.62);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}.square.selected{box-shadow:inset 0 0 0 4px rgba(255,224,154,.86),inset 0 0 22px rgba(255,210,120,.42);z-index:2}.square.selected::before{opacity:1;transform:scale(1)}.square.selected .piece-svg{animation:selectedPiecePulse 920ms ease-in-out infinite}.square.legal::after,.square.capture::after{content:"";position:absolute;left:50%;top:50%;pointer-events:none;transform:translate(-50%,-50%);border-radius:999px}.square.legal::after{width:21%;height:21%;background:rgba(38,26,14,.32);box-shadow:0 0 0 7px rgba(255,231,178,.16),0 0 18px rgba(255,225,170,.26);animation:legalDot 1.15s ease-in-out infinite}.square.capture::after{width:72%;height:72%;border:4px solid rgba(255,126,96,.72);box-shadow:0 0 0 4px rgba(255,126,96,.14),0 0 22px rgba(255,126,96,.38);animation:captureRing 900ms ease-in-out infinite}.square.last-from,.square.last-to{box-shadow:inset 0 0 0 999px rgba(255,213,136,.18)}.square.last-to{box-shadow:inset 0 0 0 999px rgba(255,213,136,.24),inset 0 0 0 3px rgba(255,226,165,.46)}.square.move-flash::before{opacity:1;animation:moveFlash 720ms ease-out}.piece-svg{transition:transform 180ms ease,filter 180ms ease,opacity 180ms ease}.square:hover .piece-svg{transform:translateY(-2px) scale(1.03)}.sound-toggle.sound-off{opacity:.72}.game-status.check-alert{color:#ffc8b8;text-shadow:0 0 16px rgba(255,120,90,.5);animation:statusPulse 900ms ease-in-out 2}@keyframes loungeGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.95;transform:scale(1.015)}}@keyframes boardPop{0%{transform:scale(.992);filter:brightness(1.08)}100%{transform:scale(1);filter:brightness(1)}}@keyframes selectedPiecePulse{0%,100%{transform:translateY(-1px) scale(1.05);filter:drop-shadow(0 7px 7px rgba(0,0,0,.36))}50%{transform:translateY(-5px) scale(1.11);filter:drop-shadow(0 14px 11px rgba(0,0,0,.42))}}@keyframes legalDot{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.72}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@keyframes captureRing{0%,100%{transform:translate(-50%,-50%) scale(.96);opacity:.76}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}}@keyframes moveFlash{0%{opacity:0;transform:scale(.65)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1.45)}}@keyframes statusPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.board-frame::before,#board.board-pop,.square.selected .piece-svg,.square.legal::after,.square.capture::after,.square.move-flash::before,.game-status.check-alert{animation:none!important}}
+@media (prefers-reduced-motion: reduce) {
+  #board.board-pop,
+  .piece-svg {
+    animation: none !important;
+    transition: none !important;
+  }
+}
