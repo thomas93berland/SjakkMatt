@@ -159,8 +159,8 @@
         ensureDebugBox();
 
         setTimeout(() => {
-          if (!window.CHESS_LOUNGE_APP_V13_MODULE_RUNNING) {
-            ensureDebugBox().textContent = "Hovedappen app-v13.js har ikke startet etter 5 sekunder.";
+          if (!window.CHESS_LOUNGE_APP_V15_MODULE_RUNNING) {
+            ensureDebugBox().textContent = "Hovedappen app-v15.js har ikke startet etter 5 sekunder.";
             setStatus("Hovedappen startet ikke.");
           }
         }, 5000);
@@ -209,6 +209,6 @@
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <script type="module" src="./app-v14.js"></script>
+  <script type="module" src="./app-v15.js"></script>
 </body>
 </html>
