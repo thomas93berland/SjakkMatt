@@ -404,196 +404,177 @@
 
 
 /* =====================================================
-   V20 - Brikkevelger / Piece Themes
+   V22 - Image Staunton Pieces
+   Brikkestil inspirert av referansebildet:
+   blank sort, varm ivory, brede baser, 2D game-asset look.
    ===================================================== */
 
-.lounge-select {
+.coord,
+.square .coord,
+#board .coord {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.piece {
   width: 100%;
-  min-height: 46px;
-  margin: 8px 0 14px;
-  padding: 0 13px;
-  border-radius: 14px;
-  border: 1px solid rgba(236, 190, 123, 0.22);
-  background:
-    linear-gradient(180deg, rgba(45, 22, 11, 0.92), rgba(18, 8, 4, 0.92));
-  color: #ffe4b6;
-  font-weight: 800;
-  outline: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  height: 100%;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  user-select: none;
+  position: relative;
+  z-index: 20;
+  transform: translateZ(0);
 }
 
-.lounge-select option {
-  background: #1c0d06;
-  color: #ffe4b6;
-}
-
-.piece-svg {
+.piece-svg,
+.image-staunton-svg {
+  width: 91%;
+  height: 91%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
   transform: translateY(-1%);
   transition: transform 150ms ease, filter 150ms ease;
 }
 
-.square:hover .piece-svg {
-  transform: translateY(-3%) scale(1.025);
+.piece-fill {
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-/* 1. Lounge Staunton */
-body.piece-theme-lounge .piece.white-piece .piece-fill {
-  fill: #f2d49a;
-  stroke: #9a6126;
+.piece-rim,
+.piece-line,
+.piece-detail,
+.piece-highlight {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-body.piece-theme-lounge .piece.white-piece .piece-line,
-body.piece-theme-lounge .piece.white-piece .piece-detail {
-  stroke: #9e6429;
+.piece-shadow {
+  stroke: none;
 }
 
-body.piece-theme-lounge .piece.white-piece .piece-dot {
-  fill: #9e6429;
+/* Black pieces */
+.piece.black-piece .piece-fill {
+  fill: #141414;
+  stroke: #050505;
+  stroke-width: 3.05;
 }
 
-body.piece-theme-lounge .piece.white-piece .piece-svg {
-  filter:
-    drop-shadow(0 1px 0 rgba(255,255,255,0.36))
-    drop-shadow(0 4px 5px rgba(86,45,13,0.42))
-    drop-shadow(0 8px 10px rgba(0,0,0,0.18));
+.piece.black-piece .piece-rim,
+.piece.black-piece .piece-line,
+.piece.black-piece .piece-detail {
+  stroke: #585858;
+  stroke-width: 2.65;
 }
 
-body.piece-theme-lounge .piece.black-piece .piece-fill {
-  fill: #101010;
-  stroke: #505050;
+.piece.black-piece .piece-rim.soft {
+  stroke: rgba(255,255,255,0.15);
 }
 
-body.piece-theme-lounge .piece.black-piece .piece-line,
-body.piece-theme-lounge .piece.black-piece .piece-detail {
-  stroke: #777777;
+.piece.black-piece .piece-highlight {
+  stroke: rgba(255,255,255,0.28);
+  stroke-width: 2.2;
 }
 
-body.piece-theme-lounge .piece.black-piece .piece-dot {
-  fill: #888888;
+.piece.black-piece .piece-dot {
+  fill: #8a8a8a;
 }
 
-body.piece-theme-lounge .piece.black-piece .piece-svg {
+.piece.black-piece .piece-shadow {
+  fill: rgba(0,0,0,0.46);
+}
+
+.piece.black-piece .piece-svg {
   filter:
     drop-shadow(0 1px 0 rgba(255,255,255,0.10))
-    drop-shadow(0 4px 5px rgba(0,0,0,0.62))
-    drop-shadow(0 9px 12px rgba(0,0,0,0.32));
+    drop-shadow(0 5px 6px rgba(0,0,0,0.62))
+    drop-shadow(0 10px 12px rgba(0,0,0,0.30));
 }
 
-/* 2. Wood Classic */
-body.piece-theme-wood .piece.white-piece .piece-fill {
-  fill: #d9954d;
-  stroke: #794111;
+/* White / ivory pieces */
+.piece.white-piece .piece-fill {
+  fill: #f0d59b;
+  stroke: #7a4d1e;
+  stroke-width: 3.05;
 }
 
-body.piece-theme-wood .piece.white-piece .piece-line,
-body.piece-theme-wood .piece.white-piece .piece-detail {
-  stroke: #6a3710;
+.piece.white-piece .piece-rim,
+.piece.white-piece .piece-line,
+.piece.white-piece .piece-detail {
+  stroke: #9a6428;
+  stroke-width: 2.65;
 }
 
-body.piece-theme-wood .piece.white-piece .piece-dot {
-  fill: #6a3710;
+.piece.white-piece .piece-rim.soft {
+  stroke: rgba(255,255,255,0.56);
 }
 
-body.piece-theme-wood .piece.white-piece .piece-svg {
+.piece.white-piece .piece-highlight {
+  stroke: rgba(255,249,225,0.88);
+  stroke-width: 2.2;
+}
+
+.piece.white-piece .piece-dot {
+  fill: #80511f;
+}
+
+.piece.white-piece .piece-shadow {
+  fill: rgba(74, 40, 12, 0.20);
+}
+
+.piece.white-piece .piece-svg {
   filter:
-    drop-shadow(0 1px 0 rgba(255,230,170,0.28))
-    drop-shadow(0 4px 5px rgba(82,38,8,0.44))
-    drop-shadow(0 8px 9px rgba(0,0,0,0.18));
+    drop-shadow(0 1px 0 rgba(255,255,255,0.38))
+    drop-shadow(0 4px 5px rgba(86,45,13,0.42))
+    drop-shadow(0 9px 10px rgba(0,0,0,0.18));
 }
 
-body.piece-theme-wood .piece.black-piece .piece-fill {
-  fill: #5b2a10;
-  stroke: #2a1206;
+/* Extra details */
+.piece-detail.cross {
+  stroke-width: 3.4;
 }
 
-body.piece-theme-wood .piece.black-piece .piece-line,
-body.piece-theme-wood .piece.black-piece .piece-detail {
-  stroke: #a0662d;
+.piece-detail.bishop-cut {
+  stroke-width: 3.2;
 }
 
-body.piece-theme-wood .piece.black-piece .piece-dot {
-  fill: #a0662d;
+.piece-detail.mane {
+  stroke-width: 2.25;
 }
 
-body.piece-theme-wood .piece.black-piece .piece-svg {
-  filter:
-    drop-shadow(0 1px 0 rgba(255,206,132,0.16))
-    drop-shadow(0 5px 6px rgba(0,0,0,0.50))
-    drop-shadow(0 9px 12px rgba(0,0,0,0.25));
+/* Make board sit close under timers */
+.play-page .board-frame {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
 }
 
-/* 3. Gold & Black */
-body.piece-theme-gold .piece.white-piece .piece-fill {
-  fill: #e6b55f;
-  stroke: #6f4314;
+.play-page #board {
+  width: min(100vw, calc(100dvh - 122px)) !important;
+  height: min(100vw, calc(100dvh - 122px)) !important;
 }
 
-body.piece-theme-gold .piece.white-piece .piece-line,
-body.piece-theme-gold .piece.white-piece .piece-detail {
-  stroke: #fff0b9;
-}
+@media (max-width: 700px) {
+  .piece-svg,
+  .image-staunton-svg {
+    width: 89%;
+    height: 89%;
+  }
 
-body.piece-theme-gold .piece.white-piece .piece-dot {
-  fill: #fff0b9;
-}
+  .play-page .board-frame {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
 
-body.piece-theme-gold .piece.white-piece .piece-svg {
-  filter:
-    drop-shadow(0 0 6px rgba(255,200,90,0.30))
-    drop-shadow(0 5px 6px rgba(70,32,8,0.44))
-    drop-shadow(0 10px 14px rgba(0,0,0,0.22));
-}
-
-body.piece-theme-gold .piece.black-piece .piece-fill {
-  fill: #0b0b0b;
-  stroke: #6a4a22;
-}
-
-body.piece-theme-gold .piece.black-piece .piece-line,
-body.piece-theme-gold .piece.black-piece .piece-detail {
-  stroke: #c99a4d;
-}
-
-body.piece-theme-gold .piece.black-piece .piece-dot {
-  fill: #c99a4d;
-}
-
-body.piece-theme-gold .piece.black-piece .piece-svg {
-  filter:
-    drop-shadow(0 0 5px rgba(214,155,70,0.18))
-    drop-shadow(0 5px 7px rgba(0,0,0,0.65))
-    drop-shadow(0 9px 12px rgba(0,0,0,0.34));
-}
-
-/* 4. Minimal Clean */
-body.piece-theme-minimal .piece.white-piece .piece-fill {
-  fill: #efe8da;
-  stroke: #8d8171;
-}
-
-body.piece-theme-minimal .piece.white-piece .piece-line,
-body.piece-theme-minimal .piece.white-piece .piece-detail {
-  stroke: #7c7164;
-}
-
-body.piece-theme-minimal .piece.white-piece .piece-dot {
-  fill: #7c7164;
-}
-
-body.piece-theme-minimal .piece.black-piece .piece-fill {
-  fill: #222326;
-  stroke: #55565a;
-}
-
-body.piece-theme-minimal .piece.black-piece .piece-line,
-body.piece-theme-minimal .piece.black-piece .piece-detail {
-  stroke: #6d6f75;
-}
-
-body.piece-theme-minimal .piece.black-piece .piece-dot {
-  fill: #6d6f75;
-}
-
-body.piece-theme-minimal .piece-svg {
-  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.30)) !important;
+  .play-page #board {
+    width: min(100vw, calc(100dvh - 116px)) !important;
+    height: min(100vw, calc(100dvh - 116px)) !important;
+  }
 }
