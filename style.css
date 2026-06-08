@@ -2,8 +2,7 @@
 
 
 /* =====================================================
-   PLAY PAGE EDGE-TO-EDGE BOARD OVERRIDE V9
-   Brettet får størst mulig plass, drawer ligger over spillet.
+   PLAY PAGE EDGE-TO-EDGE BOARD OVERRIDE SAFE V10
    ===================================================== */
 
 .play-page {
@@ -11,9 +10,6 @@
   height: 100dvh;
   overflow: hidden;
   padding: 0;
-  background:
-    radial-gradient(circle at 50% 10%, rgba(227,180,109,.06), transparent 32%),
-    linear-gradient(135deg, #120804 0%, #261308 100%);
 }
 
 .play-shell {
@@ -41,36 +37,8 @@
   gap: 8px;
   align-items: center;
   padding: 8px 10px;
-  background: linear-gradient(180deg, rgba(17, 8, 4, 0.82), rgba(17, 8, 4, 0.48));
+  background: linear-gradient(180deg, rgba(17, 8, 4, 0.84), rgba(17, 8, 4, 0.50));
   backdrop-filter: blur(4px);
-}
-
-.player-pill {
-  border-radius: 16px;
-  padding: 10px 12px;
-  min-width: 0;
-  background: rgba(48, 24, 12, 0.62);
-  border: 1px solid rgba(236,190,123,.18);
-  box-shadow: 0 8px 20px rgba(0,0,0,.20);
-}
-
-.game-center {
-  text-align: center;
-  min-width: 160px;
-}
-
-.room-code-big {
-  font-size: clamp(18px, 3vw, 34px);
-  font-weight: 900;
-  letter-spacing: 4px;
-  color: #ffd693;
-  line-height: 1;
-}
-
-.game-status {
-  color: #ceb18d;
-  font-size: 13px;
-  margin-top: 6px;
 }
 
 .board-frame {
@@ -91,9 +59,6 @@
   width: min(100vw, calc(100dvh - 84px));
   height: min(100vw, calc(100dvh - 84px));
   aspect-ratio: 1 / 1;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
   border-radius: 0;
   overflow: hidden;
   background: #4a250f;
@@ -103,7 +68,7 @@
 
 .light {
   background:
-    radial-gradient(circle at 35% 25%, rgba(255,255,255,.06), transparent 36%),
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.055), transparent 36%),
     linear-gradient(135deg, rgba(255,255,255,.05), transparent),
     #d9974b;
 }
@@ -145,12 +110,6 @@
   width: 58px;
   height: 58px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #e3b46d, #c88438);
-  color: #241309;
-  font-size: 26px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 12px 28px rgba(0,0,0,.38);
 }
 
 @media (max-width: 700px) {
@@ -177,25 +136,5 @@
   #board {
     width: min(100vw, calc(100dvh - 112px));
     height: min(100vw, calc(100dvh - 112px));
-  }
-}
-
-@media (max-width: 480px) {
-  .room-code-big {
-    font-size: 18px;
-    letter-spacing: 3px;
-  }
-
-  .game-status {
-    font-size: 12px;
-  }
-
-  .board-frame {
-    height: calc(100dvh - 108px);
-  }
-
-  #board {
-    width: min(100vw, calc(100dvh - 108px));
-    height: min(100vw, calc(100dvh - 108px));
   }
 }
