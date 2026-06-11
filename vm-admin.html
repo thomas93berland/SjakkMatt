@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>VM Bets Admin</title>
+
+  <link rel="stylesheet" href="vm-bets.css" />
+  <script type="module" src="vm-admin.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">The Chess Lounge</p>
+        <h1>VM Admin</h1>
+        <p class="subtitle">Legg inn VM-kamper, odds, status og resultater.</p>
+      </div>
+
+      <a class="ghost-btn" href="vm-bets.html">Til VM Bets</a>
+    </header>
+
+    <section class="notice">
+      <strong>Admin:</strong> Denne siden bør bare være tilgjengelig for deg. Beskytt den med Firebase Rules før publisering.
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Ny kamp</p>
+            <h2>Legg inn kamp</h2>
+          </div>
+        </div>
+
+        <form id="matchForm" class="admin-form">
+          <label>
+            Hjemmelag
+            <input id="homeTeam" required placeholder="Norge" />
+          </label>
+
+          <label>
+            Bortelag
+            <input id="awayTeam" required placeholder="Brasil" />
+          </label>
+
+          <label>
+            Starttid
+            <input id="startTime" required type="datetime-local" />
+          </label>
+
+          <div class="odds-grid">
+            <label>
+              Odds 1
+              <input id="oddsHome" required type="number" min="1.01" step="0.01" value="2.10" />
+            </label>
+
+            <label>
+              Odds X
+              <input id="oddsDraw" required type="number" min="1.01" step="0.01" value="3.30" />
+            </label>
+
+            <label>
+              Odds 2
+              <input id="oddsAway" required type="number" min="1.01" step="0.01" value="2.80" />
+            </label>
+          </div>
+
+          <button class="primary-btn" type="submit">Lagre kamp</button>
+        </form>
+      </section>
+
+      <aside class="panel leaderboard-panel">
+        <div class="panel-header compact">
+          <div>
+            <p class="eyebrow">Utbetaling</p>
+            <h2>Adminregler</h2>
+          </div>
+        </div>
+
+        <div class="rules-box">
+          <p>1. Sett kampen til <strong>stengt</strong> når den starter.</p>
+          <p>2. Etter kampen: velg riktig resultat.</p>
+          <p>3. Trykk <strong>betal ut</strong>.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel" style="margin-top: 18px;">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Kampliste</p>
+          <h2>Alle VM-kamper</h2>
+        </div>
+        <button id="refreshBtn" class="ghost-btn">Oppdater</button>
+      </div>
+
+      <div id="adminMatchesList" class="matches-list">
+        <p class="empty">Laster kamper...</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

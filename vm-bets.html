@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>VM Bets Lounge</title>
+
+  <link rel="stylesheet" href="vm-bets.css" />
+
+  <script type="module" src="vm-bets.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">The Chess Lounge</p>
+        <h1>VM Bets Lounge</h1>
+        <p class="subtitle">Tipp på VM-kampene med falske coins og konkurrer mot venner.</p>
+      </div>
+
+      <section class="wallet-card">
+        <span>Din saldo</span>
+        <strong id="coinBalance">10 000</strong>
+        <small>VM Coins</small>
+      </section>
+    </header>
+
+    <section class="notice">
+      <strong>Kun for moro:</strong>
+      VM Coins har ingen ekte pengeverdi, kan ikke kjøpes og kan ikke tas ut.
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Kamper</p>
+            <h2>Åpne VM-kamper</h2>
+          </div>
+          <button id="refreshBtn" class="ghost-btn">Oppdater</button>
+        </div>
+
+        <div id="matchesList" class="matches-list">
+          <p class="empty">Laster kamper...</p>
+        </div>
+      </section>
+
+      <aside class="panel leaderboard-panel">
+        <div class="panel-header compact">
+          <div>
+            <p class="eyebrow">Ranking</p>
+            <h2>Leaderboard</h2>
+          </div>
+        </div>
+
+        <ol id="leaderboard" class="leaderboard">
+          <li class="empty">Laster ranking...</li>
+        </ol>
+
+        <div class="rules-box">
+          <h3>Poeng/regler</h3>
+          <p>Velg 1, X eller 2. Gevinst regnes slik:</p>
+          <code>innsats × odds</code>
+          <p>Kampen låses når admin setter status til <strong>stengt</strong> eller <strong>ferdig</strong>.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="betDialog" class="bet-dialog">
+    <form method="dialog" class="bet-modal">
+      <button class="close-btn" value="cancel" aria-label="Lukk">×</button>
+
+      <p class="eyebrow">Legg inn tips</p>
+      <h2 id="dialogMatchTitle">Kamp</h2>
+
+      <label>
+        Valg
+        <select id="betChoice">
+          <option value="home">Hjemmeseier</option>
+          <option value="draw">Uavgjort</option>
+          <option value="away">Borteseier</option>
+        </select>
+      </label>
+
+      <label>
+        Innsats
+        <input id="betStake" type="number" min="10" step="10" value="100" />
+      </label>
+
+      <div class="payout-preview">
+        Mulig gevinst:
+        <strong id="potentialWin">0</strong>
+        VM Coins
+      </div>
+
+      <menu>
+        <button value="cancel" class="ghost-btn">Avbryt</button>
+        <button id="confirmBetBtn" value="default" class="primary-btn">Bekreft bet</button>
+      </menu>
+    </form>
+  </dialog>
+</body>
+</html>
