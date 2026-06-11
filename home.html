@@ -3,61 +3,800 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Chess Lounge | Hjem</title>
-  <link rel="stylesheet" href="./style.css" />
+
+  <title>The Chess Lounge</title>
+
+  <style>
+    :root {
+      --bg: #100a06;
+      --bg-soft: #1c120b;
+      --card: rgba(43, 29, 18, 0.86);
+      --card-strong: rgba(58, 39, 24, 0.96);
+      --line: rgba(236, 192, 122, 0.18);
+      --line-strong: rgba(236, 192, 122, 0.34);
+      --text: #f8ead8;
+      --muted: #c9ad8e;
+      --gold: #d6a34b;
+      --gold-soft: #f2ce82;
+      --green: #8fd49a;
+      --red: #d87862;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(214, 163, 75, 0.22), transparent 30rem),
+        radial-gradient(circle at 85% 20%, rgba(122, 76, 37, 0.3), transparent 28rem),
+        radial-gradient(circle at bottom right, rgba(63, 36, 18, 0.52), transparent 36rem),
+        linear-gradient(135deg, #0d0805 0%, #1a1009 45%, #0d0805 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.035) 0,
+          rgba(255, 255, 255, 0.035) 1px,
+          transparent 1px,
+          transparent 34px
+        );
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 20px 0 34px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(21, 13, 8, 0.72);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: #140d08;
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+      font-size: 1.35rem;
+      font-weight: 1000;
+      box-shadow: 0 10px 24px rgba(214, 163, 75, 0.24);
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 1rem;
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a,
+    .small-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 800;
+      transition: 0.18s ease;
+    }
+
+    .nav a:hover,
+    .small-btn:hover {
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .nav .active-link {
+      color: #160f09;
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) 420px;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-card,
+    .panel,
+    .feature-card,
+    .side-card {
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+        var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 410px;
+      padding: clamp(22px, 5vw, 42px);
+      border-radius: var(--radius);
+    }
+
+    .hero-card::after {
+      content: "♞";
+      position: absolute;
+      right: -2rem;
+      bottom: -6.5rem;
+      color: rgba(242, 206, 130, 0.065);
+      font-size: 22rem;
+      line-height: 1;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin-bottom: 14px;
+      font-size: clamp(2.55rem, 8vw, 5.7rem);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.35rem, 3.5vw, 2rem);
+      letter-spacing: -0.035em;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.14rem);
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .danger-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 16px;
+      min-height: 48px;
+      padding: 12px 17px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .primary-btn {
+      color: #160f09;
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+      box-shadow: 0 12px 28px rgba(214, 163, 75, 0.24);
+    }
+
+    .primary-btn:hover,
+    .ghost-btn:hover,
+    .danger-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .ghost-btn {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .danger-btn {
+      color: #fff4ec;
+      border: 1px solid rgba(216, 120, 98, 0.42);
+      background: rgba(216, 120, 98, 0.12);
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 700px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      padding: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.065);
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--gold-soft);
+      font-size: 1.45rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .side-card {
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .vm-highlight {
+      position: relative;
+      overflow: hidden;
+      min-height: 250px;
+      background:
+        radial-gradient(circle at top right, rgba(143, 212, 154, 0.16), transparent 16rem),
+        linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+        var(--card-strong);
+    }
+
+    .vm-highlight::after {
+      content: "⚽";
+      position: absolute;
+      right: -18px;
+      bottom: -30px;
+      font-size: 8rem;
+      opacity: 0.08;
+    }
+
+    .coin-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      padding: 13px 14px;
+      border: 1px solid rgba(143, 212, 154, 0.22);
+      border-radius: 18px;
+      background: rgba(143, 212, 154, 0.08);
+    }
+
+    .coin-box span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .coin-box strong {
+      color: var(--green);
+      font-size: 1.5rem;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 9px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mini-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 11px;
+      border-radius: 14px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .mini-list strong {
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 14px;
+      margin: 24px 0 12px;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      max-width: 690px;
+      color: var(--muted);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-content: space-between;
+      min-height: 210px;
+      padding: 18px;
+      border-radius: 22px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+        var(--card-strong);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      border-radius: 17px;
+      color: #150e08;
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+      font-size: 1.45rem;
+      font-weight: 1000;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 7px;
+      font-size: 1.18rem;
+    }
+
+    .feature-card p {
+      margin-bottom: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.94rem;
+    }
+
+    .feature-card .card-link {
+      display: inline-flex;
+      width: max-content;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-soft);
+      font-weight: 950;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .chat-preview {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .message {
+      display: grid;
+      gap: 3px;
+      padding: 11px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .message strong {
+      color: var(--gold-soft);
+      font-size: 0.88rem;
+    }
+
+    .message span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .notice {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid rgba(143, 212, 154, 0.22);
+      border-radius: 18px;
+      color: #dff7df;
+      background: rgba(143, 212, 154, 0.08);
+      line-height: 1.55;
+    }
+
+    .admin-note {
+      border-color: rgba(216, 120, 98, 0.28);
+      color: #ffd8cc;
+      background: rgba(216, 120, 98, 0.08);
+    }
+
+    .footer {
+      margin-top: 22px;
+      padding: 18px 4px 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 1050px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 20px, 1220px);
+        padding-top: 10px;
+      }
+
+      .topbar {
+        position: static;
+        align-items: stretch;
+        border-radius: 22px;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: stretch;
+      }
+
+      .nav a {
+        flex: 1 1 auto;
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+
+      .hero-stats,
+      .features,
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .hero-actions {
+        display: grid;
+      }
+
+      .primary-btn,
+      .ghost-btn,
+      .danger-btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-<body class="site-page" data-page="home">
-  <div class="app-shell">
+
+<body>
+  <main class="page">
     <header class="topbar">
-      <button class="menu-toggle" id="menuToggle" type="button">☰</button>
-      <div class="site-logo">♔ <span>The Chess Lounge</span></div>
-      <button class="ghost-btn" id="logoutBtn" type="button">Logg ut</button>
+      <a class="brand" href="home.html" aria-label="The Chess Lounge hjem">
+        <div class="brand-mark">♞</div>
+        <div class="brand-text">
+          <strong>The Chess Lounge</strong>
+          <span>Sjakk · venner · VM-konkurranse</span>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Hovedmeny">
+        <a class="active-link" href="home.html">Hjem</a>
+        <a href="play.html">Spill</a>
+        <a href="profile.html">Profil</a>
+        <a href="vm-bets.html">VM Bets</a>
+        <a href="#community">Chat</a>
+      </nav>
     </header>
-    <div class="main-layout">
-      <aside class="side-menu" id="sideMenu">
-        <button class="menu-item active" type="button" data-panel="dashboardPanel">🏠 Oversikt</button>
-        <button class="menu-item" type="button" data-panel="playPanel">♟ Spill</button>
-        <button class="menu-item" type="button" data-panel="invitesPanel">✉ Invitasjoner</button>
-        <button class="menu-item" type="button" data-panel="playersPanel">👥 Spillere</button>
-        <button class="menu-item" type="button" data-panel="chatPanel">💬 Chat</button>
-        <button class="menu-item" type="button" data-panel="profilePanel">👤 Profil</button>
+
+    <section class="hero">
+      <article class="hero-card">
+        <p class="eyebrow">Velkommen inn</p>
+        <h1>Chess, lounge og VM-feber.</h1>
+        <p class="hero-text">
+          Spill sjakk med venner, følg profilen din, heng i communityet og konkurrer om hvem som klarer å vinne mest
+          på VM-kampene med falske VM Coins.
+        </p>
+
+        <div class="hero-actions">
+          <a class="primary-btn" href="play.html">♟ Spill sjakk</a>
+          <a class="ghost-btn" href="vm-bets.html">⚽ Åpne VM Bets</a>
+          <a class="ghost-btn" href="profile.html">👤 Min profil</a>
+        </div>
+
+        <div class="hero-stats" aria-label="Status">
+          <div class="stat">
+            <strong>10 000</strong>
+            <span>Startsaldo i VM Coins</span>
+          </div>
+
+          <div class="stat">
+            <strong>1X2</strong>
+            <span>Tipp hjemmeseier, uavgjort eller borteseier</span>
+          </div>
+
+          <div class="stat">
+            <strong>0 kr</strong>
+            <span>Kun falsk valuta og heder</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="side-stack">
+        <article class="side-card vm-highlight">
+          <p class="eyebrow">Ny modul</p>
+          <h2>VM Bets Lounge</h2>
+          <p class="hero-text">
+            Privat konkurranse for deg og vennene dine. Legg inn VM-kamper, velg odds, steng betting når kampen starter
+            og betal ut falske coins etter resultatet.
+          </p>
+
+          <div class="coin-box">
+            <span>Startsaldo</span>
+            <strong>10 000 coins</strong>
+          </div>
+
+          <div class="hero-actions">
+            <a class="primary-btn" href="vm-bets.html">Åpne VM Bets</a>
+            <a class="ghost-btn" href="vm-admin.html">Admin</a>
+          </div>
+        </article>
+
+        <article class="side-card">
+          <p class="eyebrow">Neste kamper</p>
+          <h2>VM-tipping</h2>
+          <ul class="mini-list">
+            <li><strong>1</strong><span>Hjemmeseier</span></li>
+            <li><strong>X</strong><span>Uavgjort</span></li>
+            <li><strong>2</strong><span>Borteseier</span></li>
+          </ul>
+        </article>
       </aside>
-      <main class="content-area">
-        <section class="panel active" id="dashboardPanel">
-          <div class="welcome-box">
-            <div>
-              <p class="eyebrow">Velkommen tilbake</p>
-              <h1 id="welcomeName">Laster spiller...</h1>
-              <p>Velg noe fra menyen. Hjemmesiden er ryddet ned slik at alt ikke ligger fremme samtidig.</p>
-            </div>
-            <button class="primary-btn" id="quickPlayBtn" type="button">Start spill</button>
+    </section>
+
+    <section class="section-head">
+      <div>
+        <p class="eyebrow">Lounge meny</p>
+        <h2>Velg hva du vil gjøre</h2>
+        <p>
+          Hovedsiden er ryddet som en app-lobby: sjakk først, deretter profil, chat/community og VM Bets.
+        </p>
+      </div>
+    </section>
+
+    <section class="features">
+      <a class="feature-card" href="play.html">
+        <div>
+          <div class="feature-icon">♚</div>
+          <h3>Spill mot venn</h3>
+          <p>Gå rett til sjakkrommet og spill online mot en venn.</p>
+        </div>
+        <span class="card-link">Start spill →</span>
+      </a>
+
+      <a class="feature-card" href="vm-bets.html">
+        <div>
+          <div class="feature-icon">⚽</div>
+          <h3>VM Bets Lounge</h3>
+          <p>Bet på VM-kampene med falsk valuta og konkurrer på leaderboard.</p>
+        </div>
+        <span class="card-link">Åpne VM Bets →</span>
+      </a>
+
+      <a class="feature-card" href="profile.html">
+        <div>
+          <div class="feature-icon">◎</div>
+          <h3>Profil</h3>
+          <p>Se brukerprofil, coins, historikk og spillerstatus.</p>
+        </div>
+        <span class="card-link">Se profil →</span>
+      </a>
+
+      <a class="feature-card" href="#community">
+        <div>
+          <div class="feature-icon">✦</div>
+          <h3>Community</h3>
+          <p>Samle venner, chat, forum og lounge-stemning på samme sted.</p>
+        </div>
+        <span class="card-link">Se chat →</span>
+      </a>
+    </section>
+
+    <section class="bottom-grid" id="community">
+      <article class="panel">
+        <p class="eyebrow">Community</p>
+        <h2>Chat & venner</h2>
+        <div class="chat-preview">
+          <div class="message">
+            <strong>Thomas</strong>
+            <span>Noen som er klar for sjakk og VM-tipping i kveld?</span>
           </div>
-          <div class="stats-grid">
-            <div class="stat-card"><span>Elo</span><strong id="elo">800</strong></div>
-            <div class="stat-card"><span>Seire</span><strong id="wins">0</strong></div>
-            <div class="stat-card"><span>Tap</span><strong id="losses">0</strong></div>
-            <div class="stat-card"><span>Remis</span><strong id="draws">0</strong></div>
+
+          <div class="message">
+            <strong>Elise</strong>
+            <span>Jeg blir med — men jeg better bare med falske coins 😄</span>
           </div>
-        </section>
-        <section class="panel" id="playPanel">
-          <div class="section-head"><h2>Spill sjakk</h2><p>Lag et rom, bli med med romkode, eller inviter en registrert spiller.</p></div>
-          <div class="action-grid">
-            <button class="large-action" id="openPlayBtn" type="button"><strong>♟ Åpne spillrom</strong><span>Gå direkte til sjakkbrettet og lobbyen.</span></button>
-            <button class="large-action" type="button" data-panel="playersPanel"><strong>👥 Inviter spiller</strong><span>Velg en spiller fra listen og send invitasjon.</span></button>
+
+          <div class="message">
+            <strong>Colin</strong>
+            <span>Leaderboardet blir mitt!</span>
           </div>
-        </section>
-        <section class="panel" id="invitesPanel"><div class="section-head"><h2>Invitasjoner</h2><p>Godta eller avslå spillinvitasjoner fra andre spillere.</p></div><div class="list-box" id="invitesList"><div class="empty-state">Laster invitasjoner...</div></div></section>
-        <section class="panel" id="playersPanel"><div class="section-head"><h2>Registrerte spillere</h2><p>Send en invitasjon til en spiller. Hvit/svart trekkes tilfeldig.</p></div><div class="list-box" id="playersList"><div class="empty-state">Laster spillere...</div></div></section>
-        <section class="panel" id="chatPanel"><div class="section-head"><h2>Chatrom</h2><p>Et enkelt fellesrom for Chess Lounge-spillere.</p></div><div class="chat-window" id="chatWindow"><div class="empty-state">Laster chat...</div></div><form class="chat-form" id="chatForm"><input id="chatInput" maxlength="220" placeholder="Skriv en melding..." autocomplete="off" /><button class="primary-btn" type="submit">Send</button></form></section>
-        <section class="panel" id="profilePanel"><div class="section-head"><h2>Min profil</h2><p>Se og endre profilen din.</p></div><div class="profile-mini"><div class="avatar">♞</div><div><h3 id="profileNameMini">Laster...</h3><p id="profileEmailMini">Sjekker innlogging...</p></div></div><button class="primary-btn" id="openProfileBtn" type="button">Åpne profilside</button></section>
-        <div id="statusMsg" class="message"></div>
-      </main>
-    </div>
-  </div>
-  <script type="module" src="./app.js"></script>
-  <link rel="stylesheet" href="./admin-access.css" />
-<script type="module" src="./admin-access.js"></script>
-  <link rel="stylesheet" href="./lounge-music.css" />
-<script src="./lounge-music.js" defer></script>
+        </div>
+
+        <div class="notice">
+          Chatten her er en pen forhåndsvisning. Har du allerede egen chatkode i prosjektet, kan den kobles inn her senere.
+        </div>
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Trygt oppsett</p>
+        <h2>Kun falsk valuta</h2>
+        <p class="hero-text">
+          VM Coins er bare for moro. De kan ikke kjøpes, selges eller tas ut. Det skal ikke være ekte penger eller premier
+          med økonomisk verdi i denne modulen.
+        </p>
+
+        <div class="notice">
+          <strong>Anbefalt:</strong> Bruk VM Bets som sosial tippekonkurranse mellom venner, med leaderboard og heder.
+        </div>
+
+        <div class="notice admin-note">
+          <strong>Admin:</strong> Beskytt <code>vm-admin.html</code> med Firebase-regler før du deler siden offentlig.
+        </div>
+
+        <div class="hero-actions">
+          <a class="ghost-btn" href="vm-admin.html">Åpne VM Admin</a>
+          <a class="ghost-btn" href="README-VM-BETS.md">Les oppsett</a>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      The Chess Lounge · Sjakk, venner og VM Coins · Kun for underholdning
+    </footer>
+  </main>
+
+  <script>
+    const hour = new Date().getHours();
+    const brandSubtitle = document.querySelector(".brand-text span");
+
+    if (brandSubtitle) {
+      if (hour < 12) {
+        brandSubtitle.textContent = "God morgen · sjakk · VM-konkurranse";
+      } else if (hour < 18) {
+        brandSubtitle.textContent = "God dag · sjakk · VM-konkurranse";
+      } else {
+        brandSubtitle.textContent = "God kveld · sjakk · VM-konkurranse";
+      }
+    }
+  </script>
 </body>
 </html>
